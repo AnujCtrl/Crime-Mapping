@@ -4,6 +4,8 @@ import 'package:crimemapping/Screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Welcome_screen.dart';
+
 class SplashScreen extends StatefulWidget {
   static String id = 'Splash_Screen';
   @override
@@ -17,7 +19,7 @@ class SplashScreenState extends State<SplashScreen> {
     Timer(
         Duration(seconds: 2),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen())));
+            context, MaterialPageRoute(builder: (context) => WelcomeScreen())));
   }
 
   @override

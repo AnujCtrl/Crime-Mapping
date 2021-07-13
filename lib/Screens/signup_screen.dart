@@ -1,25 +1,27 @@
-import 'package:crimemapping/Screens/signup_screen.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../palette.dart';
-import 'home_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  static String id = 'Login Screen';
+class SignUpScreen extends StatefulWidget {
+  static String id = 'Sign Up Screen';
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   String email;
-  String password;
-  bool passwordBool = true;
+  String password1;
+  String password2;
+  bool passwordBool1 = true;
+  bool passwordBool2 = true;
   @override
   void initState() {
     // TODO: implement initState
-    passwordBool = true;
+    passwordBool1 = true;
+    passwordBool2 = true;
     super.initState();
   }
 
@@ -67,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 24, horizontal: 8),
                           child: Text(
-                            'Login',
+                            'Sign Up',
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
@@ -88,19 +90,53 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: TextField(
                             onChanged: (value) {
-                              password = value;
+                              password1 = value;
                             },
-                            obscureText: passwordBool,
+                            obscureText: passwordBool1,
                             cursorColor: kPrimaryColor,
                             decoration: kTextFieldDecoration.copyWith(
                               hintText: 'Password',
                               suffixIcon: TextButton.icon(
                                 onPressed: () {
                                   setState(() {
-                                    passwordBool = passwordBool ? false : true;
+                                    passwordBool1 =
+                                        passwordBool1 ? false : true;
                                   });
                                 },
-                                icon: passwordBool
+                                icon: passwordBool1
+                                    ? Icon(
+                                        CupertinoIcons.eye_slash_fill,
+                                        size: 16,
+                                        color: kTextColor,
+                                      )
+                                    : Icon(
+                                        CupertinoIcons.eye_fill,
+                                        size: 16,
+                                        color: kTextColor,
+                                      ),
+                                label: SizedBox(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: TextField(
+                            onChanged: (value) {
+                              password2 = value;
+                            },
+                            obscureText: passwordBool2,
+                            cursorColor: kPrimaryColor,
+                            decoration: kTextFieldDecoration.copyWith(
+                              hintText: 'Password',
+                              suffixIcon: TextButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    passwordBool2 =
+                                        passwordBool2 ? false : true;
+                                  });
+                                },
+                                icon: passwordBool2
                                     ? Icon(
                                         CupertinoIcons.eye_slash_fill,
                                         size: 16,
@@ -120,45 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
                             onPress: () {
-                              Navigator.pushNamed(context, HomeScreen.id);
+                              Navigator.pushNamed(context, LoginScreen.id);
                             },
-                            text: 'Login',
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Center(
-                              child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: kTextColor,
-                            ),
-                          )),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional.bottomCenter,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Don\'t have an account?',
-                                style: TextStyle(
-                                  color: kTextColor,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, SignUpScreen.id);
-                                },
-                                child: Text(
-                                  'Sign up !',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: kPrimaryColor),
-                                ),
-                              )
-                            ],
+                            text: 'Continue',
                           ),
                         ),
                       ],

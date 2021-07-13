@@ -1,3 +1,4 @@
+import 'package:crimemapping/palette.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                gradient: LinearGradient(
+                  colors: kGradientColor,
+                ),
               ),
               child: Text('Drawer Header'),
             ),
