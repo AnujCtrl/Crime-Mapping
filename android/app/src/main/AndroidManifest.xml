@@ -3,6 +3,8 @@
    <application
         android:label="crimemapping"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyAtQr2lDrwYJQu7dIPQJsjCWWcM_1kCm8E"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -37,8 +39,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAc6hvwPsfmlCyVREd7cwoNYc67JxzTZJg"/>
     </application>
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
 </manifest>

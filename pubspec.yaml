@@ -29,7 +29,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^5.0.0
   google_maps_flutter: ^2.0.6
-  location: ^2.3.0
+  dio: ^4.0.0
+  flutter_polyline_points: ^0.2.6
+  geolocator: ^7.3.0
 
 dev_dependencies:
   flutter_test:

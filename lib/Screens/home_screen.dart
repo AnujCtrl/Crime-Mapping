@@ -1,8 +1,8 @@
-import 'dart:async';
-import 'package:location/location.dart' as locationPackage;
-import 'package:crimemapping/palette.dart';
 import 'package:flutter/material.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../palette.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'Home_Screen';
@@ -11,51 +11,117 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  locationPackage.Location _locationService = new locationPackage.Location();
-  bool _permission = false;
-
-  fetchCurrentLocation() async {
-    await _locationService.changeSettings(
-        accuracy: locationPackage.LocationAccuracy.HIGH, interval: 1000);
-
-    locationPackage.LocationData location;
+  // bool mapToggle = false;
+  GoogleMapController myController;
+  // var currentLocation;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // Geolocator.getCurrentPosition().then((currloc) {
+    //   setState(() {
+    //     currentLocation = currloc;
+    //     mapToggle = true;
+    //   });
+    // });
   }
-
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Scaffold(
-          body: GoogleMap(
-            mapType: MapType.hybrid,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: kGradientColor,
+                ),
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Text('Theme'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ],
+        ),
+      ),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: kSecondaryTextColor),
+        backgroundColor: Colors.transparent,
+        // backgroundColor: Color(0x44000000),
+        elevation: 0,
+        title: Text(
+          "Hello User",
+          style: TextStyle(color: kSecondaryTextColor),
+        ),
+      ),
+      body: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed:
+              // showModalBottomSheet<void>(
+              //   context: context,
+              //   builder: (BuildContext context) => showBottomSheet(),
+              // );
+              myController == null
+                  ? null
+                  : () =>
+                      myController.animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(42.3601, -71.0589),
+                            zoom: 16.0,
+                            tilt: 30),
+                      )),
+
+          label: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: const Text(
+              'REPORT AN ISSUE',
+              style: TextStyle(fontSize: 16),
+            ),
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: _goToTheLake,
-            label: Text('To the lake!'),
-            icon: Icon(Icons.directions_boat),
-          ),
-        ));
+          // icon: const Icon(Icons.announcement_rounded),
+          backgroundColor: Colors.red,
+        ),
+        bottomNavigationBar: BottomAppBar(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: Container(
+            child: GoogleMap(
+          onMapCreated: (controller) {
+            setState(() {
+              myController = controller;
+            });
+          },
+          compassEnabled: true,
+          initialCameraPosition:
+              CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
+        )
+            // : Center(
+            //     child: Text(
+            //       'Loading...',
+            //       style: TextStyle(fontSize: 20),
+            //     ),
+            //   ),
+            ),
+      ),
+    );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  Widget showBottomSheet() {
+    return Container();
   }
 }
