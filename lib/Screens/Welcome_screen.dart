@@ -20,7 +20,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Image.asset(
-            'assets\images\Welcome.png',
+            'images/Welcome.png',
             width: 250,
             height: 250,
           ),

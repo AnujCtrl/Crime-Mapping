@@ -1,4 +1,6 @@
 import 'package:crimemapping/Widgets/button_tile.dart';
+import 'package:crimemapping/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -77,6 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: TextField(
+                            keyboardType: TextInputType.emailAddress,
                             onChanged: (value) {
                               email = value;
                             },
@@ -152,11 +155,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         ),
+                        passError()
+                            ? getMessage()
+                            : Text(
+                                'Password should at least have 6 Characters'),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
                             onPress: () {
-                              Navigator.pushNamed(context, LoginScreen.id);
+                              if (!passError()) {
+                                print('done afs');
+                                signUp(email, password1, context).whenComplete(
+                                  () => Navigator.pushNamed(
+                                      context, LoginScreen.id),
+                                );
+                              }
                             },
                             text: 'Continue',
                           ),
@@ -171,5 +184,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ],
       ),
     ));
+  }
+
+  bool passError() {
+    bool passError;
+    if (password1 != password2) {
+      setState(() {
+        passError = true;
+      });
+    } else {
+      passError = false;
+    }
+    return passError;
+  }
+
+  Text getMessage() {
+    return Text(
+      'Passwords do not match',
+      style: TextStyle(color: Colors.red),
+    );
   }
 }

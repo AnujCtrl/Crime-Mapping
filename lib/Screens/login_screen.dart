@@ -1,5 +1,7 @@
 import 'package:crimemapping/Screens/signup_screen.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
+import 'package:crimemapping/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
   String email;
   String password;
   bool passwordBool = true;
@@ -120,7 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
                             onPress: () {
-                              Navigator.pushNamed(context, HomeScreen.id);
+                              signin(email, password, context).whenComplete(
+                                  () => Navigator.pushNamed(
+                                      context, HomeScreen.id));
                             },
                             text: 'Login',
                           ),

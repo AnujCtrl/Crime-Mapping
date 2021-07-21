@@ -1,3 +1,7 @@
+import 'package:crimemapping/Model/police_data_model.dart';
+import 'package:crimemapping/Screens/Profile/profile_settings_screen.dart';
+import 'package:crimemapping/services/service_police.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:geolocator/geolocator.dart';
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,21 +16,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User loggedInUser;
+
+  List<Feature> _policeMap = List<Feature>();
   final Set<Heatmap> _heatmaps = {};
-  LatLng _heatmapLocation = LatLng(37.42796133580664, -122.085749655962);
+  final Set<Marker> _markers = {};
+  LatLng _heatmapLocation = LatLng(9.0820, 8.6753);
   String _mapStyle;
-  // bool mapToggle = false;
+  bool mapToggle;
   GoogleMapController myController;
   // var currentLocation;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    getCurrentUser();
+    mapToggle = true;
+    ServicesPoliceMap.getPoliceMap().then((value) {
+      setState(() {
+        _policeMap = value;
+        mapToggle = false;
+      });
+    });
 
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
-
     // Geolocator.getCurrentPosition().then((currloc) {
     //   setState(() {
     //     currentLocation = currloc;
@@ -35,8 +50,23 @@ class _HomeScreenState extends State<HomeScreen> {
     // });
   }
 
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // addMarkers();
+    // addHeatmap();
+    addLocation();
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -52,10 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text('Drawer Header'),
             ),
             ListTile(
-              title: Text('Item 1'),
+              title: Text('Profile'),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                Navigator.pushNamed(context, ProfileScreen.id);
               },
             ),
             ListTile(
@@ -76,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // backgroundColor: Color(0x44000000),
         elevation: 0,
         title: Text(
-          "Hello User",
+          mapToggle ? "loading.." : "Hello User",
           style: TextStyle(
               color: kPrimaryTextColor,
               fontSize: 28,
@@ -86,13 +115,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(children: [
         Scaffold(
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: _addHeatmap,
-
-            // showModalBottomSheet<void>(
-            //   context: context,
-            //   builder: (BuildContext context) => showBottomSheet(),
-            // );
-
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) => showBottomSheet(),
+              );
+            },
             // myController == null
             //     ? null
             //     : () => myController
@@ -118,6 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
               FloatingActionButtonLocation.centerFloat,
           body: Container(
               child: GoogleMap(
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
             heatmaps: _heatmaps,
             onMapCreated: (controller) {
               controller.setMapStyle(_mapStyle);
@@ -126,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 myController.setMapStyle(_mapStyle);
               });
             },
+            markers: _markers,
             compassEnabled: true,
             initialCameraPosition:
                 CameraPosition(target: _heatmapLocation, zoom: 10.0),
@@ -157,17 +188,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _addHeatmap() {
-    setState(() {
-      _heatmaps.add(Heatmap(
-          heatmapId: HeatmapId(_heatmapLocation.toString()),
-          points: _createPoints(_heatmapLocation),
-          radius: 20,
-          visible: true,
-          gradient: HeatmapGradient(
-              colors: <Color>[Colors.green, Colors.red],
-              startPoints: <double>[0.2, 0.8])));
-    });
+  void addHeatmap() {
+    for (var police in _policeMap) {
+      LatLng point = LatLng(police.geometry.coordinates[0] - 0.1,
+          police.geometry.coordinates[1] + 0.1);
+      setState(() {
+        _heatmaps.add(Heatmap(
+            heatmapId: HeatmapId(police.properties.id.toString()),
+            points: _createPoints(LatLng(point.latitude, point.longitude)),
+            radius: 20,
+            visible: true,
+            gradient: HeatmapGradient(
+                colors: <Color>[Colors.green, Colors.red],
+                startPoints: <double>[0.2, 0.8])));
+      });
+    }
   }
 
   //heatmap generation helper functions
@@ -175,15 +210,53 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<WeightedLatLng> points = <WeightedLatLng>[];
     //Can create multiple points here
     points.add(_createWeightedLatLng(location.latitude, location.longitude, 1));
-    points.add(
-        _createWeightedLatLng(location.latitude - 1, location.longitude, 1));
-    print(points.toList());
+    // points.add(
+    //     _createWeightedLatLng(location.latitude - 1, location.longitude, 1));
+    // print(points.toList());
     return points;
   }
 
   WeightedLatLng _createWeightedLatLng(double lat, double lng, int weight) {
     //print(WeightedLatLng(point: LatLng(lat, lng), intensity: weight));
     return WeightedLatLng(point: LatLng(lat, lng), intensity: weight);
+  }
+
+  addMarkers() {
+    for (var police in _policeMap) {
+      LatLng point = LatLng(
+          police.geometry.coordinates[0], police.geometry.coordinates[1]);
+      setState(() {
+        _markers.add(
+          Marker(
+            position: LatLng(point.latitude, point.longitude),
+            markerId: MarkerId(police.properties.id.toString()),
+            infoWindow: InfoWindow(
+                title: police.properties.name,
+                snippet: police.properties.stateName
+                    .toString()
+                    .replaceAll('StateName.', 'State: ')),
+            onTap: () {},
+          ),
+        );
+      });
+    }
+  }
+
+  addLocation() {
+    setState(() {
+      _markers.add(
+        Marker(
+          // icon: Icon(location),
+          position: LatLng(
+              _heatmapLocation.latitude - 0.1, _heatmapLocation.longitude),
+          markerId: MarkerId('Your Location'),
+          infoWindow: InfoWindow(
+            title: 'Your Location',
+          ),
+          onTap: () {},
+        ),
+      );
+    });
   }
 
   Widget showBottomSheet() {
