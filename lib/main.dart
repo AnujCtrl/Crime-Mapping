@@ -1,4 +1,4 @@
-import 'package:crimemapping/Screens/Profile/profile_settings_screen.dart';
+import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/Screens/Welcome_screen.dart';
 import 'package:crimemapping/Screens/login_screen.dart';
 import 'package:crimemapping/Screens/signup_screen.dart';

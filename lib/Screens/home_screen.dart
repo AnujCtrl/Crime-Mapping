@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crimemapping/Model/police_data_model.dart';
-import 'package:crimemapping/Screens/Profile/profile_settings_screen.dart';
+import 'package:crimemapping/Model/userclass.dart';
+import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   User loggedInUser;
+  UserProfile currentUser = UserProfile();
 
   List<Feature> _policeMap = List<Feature>();
   final Set<Heatmap> _heatmaps = {};
@@ -31,6 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    getUserProfile().then((value) {
+      setState(() {
+        print('hora hai');
+        currentUser = value;
+      });
+    });
     mapToggle = true;
     ServicesPoliceMap.getPoliceMap().then((value) {
       setState(() {
@@ -68,35 +78,35 @@ class _HomeScreenState extends State<HomeScreen> {
     // addHeatmap();
     addLocation();
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: kGradientColor,
-                ),
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: Text('Profile'),
-              onTap: () {
-                Navigator.pushNamed(context, ProfileScreen.id);
-              },
-            ),
-            ListTile(
-              title: Text('Theme'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     // Important: Remove any padding from the ListView.
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //       DrawerHeader(
+      //         decoration: BoxDecoration(
+      //           gradient: LinearGradient(
+      //             colors: kGradientColor,
+      //           ),
+      //         ),
+      //         child: Text('Drawer Header'),
+      //       ),
+      //       ListTile(
+      //         title: Text('Profile'),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, ProfileScreen.id);
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: Text('Theme'),
+      //         onTap: () {
+      //           // Update the state of the app.
+      //           // ...
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: true,
@@ -105,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // backgroundColor: Color(0x44000000),
         elevation: 0,
         title: Text(
-          mapToggle ? "loading.." : "Hello User",
+          mapToggle ? "loading.." : "Hello ${currentUser.name}",
           style: TextStyle(
               color: kPrimaryTextColor,
               fontSize: 28,
@@ -261,6 +271,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget showBottomSheet() {
     return Container();
+  }
+
+  Future<UserProfile> getUserProfile() async {
+    UserProfile user = UserProfile();
+    final usersinfo = await _firestore.collection('user').get();
+    for (var userinfo in usersinfo.docs) {
+      if (userinfo.data()['email'] == loggedInUser.email) {
+        // print(userinfo.data());
+        user.name = userinfo['name'];
+        user.email = userinfo['email'];
+        user.phoneNo = userinfo['phoneNo'];
+        user.emerPhoneNo = userinfo['emerPhoneNo'];
+        user.homeAddress = userinfo['homeAddress'];
+        user.gender = userinfo['gender'];
+      }
+    }
+    print(user.homeAddress);
+    return user;
   }
 }
 

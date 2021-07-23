@@ -2,7 +2,7 @@ import 'package:crimemapping/Widgets/button_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../palette.dart';
+import '../palette.dart';
 
 class ChangePasswordBottomSheet extends StatefulWidget {
   @override

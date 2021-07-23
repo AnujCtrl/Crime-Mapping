@@ -1,3 +1,4 @@
+import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
 import 'package:crimemapping/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -167,7 +168,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 print('done afs');
                                 signUp(email, password1, context).whenComplete(
                                   () => Navigator.pushNamed(
-                                      context, LoginScreen.id),
+                                      context, ProfileScreen.id),
                                 );
                               }
                             },

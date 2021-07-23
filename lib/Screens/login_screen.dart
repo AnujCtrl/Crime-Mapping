@@ -78,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: TextField(
+                            keyboardType: TextInputType.emailAddress,
                             onChanged: (value) {
                               email = value;
                             },
