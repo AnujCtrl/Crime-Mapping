@@ -18,11 +18,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  BitmapDescriptor customIcon1;
   final _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   User loggedInUser;
   UserProfile currentUser = UserProfile();
-
   List<Feature> _policeMap = List<Feature>();
   final Set<Heatmap> _heatmaps = {};
   final Set<Marker> _markers = {};
@@ -35,9 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    setCustomMarker();
     getUserProfile().then((value) {
       setState(() {
-        print('hora hai');
         currentUser = value;
       });
     });
@@ -52,12 +52,18 @@ class _HomeScreenState extends State<HomeScreen> {
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
     });
+
     // Geolocator.getCurrentPosition().then((currloc) {
     //   setState(() {
     //     currentLocation = currloc;
     //     mapToggle = true;
     //   });
     // });
+  }
+
+  Future<void> setCustomMarker() async {
+    customIcon1 = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'images/badge_5.png');
   }
 
   void getCurrentUser() async {
@@ -74,39 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // addMarkers();
+    addMarkers();
     // addHeatmap();
     addLocation();
+
     return Scaffold(
-      // drawer: Drawer(
-      //   child: ListView(
-      //     // Important: Remove any padding from the ListView.
-      //     padding: EdgeInsets.zero,
-      //     children: <Widget>[
-      //       DrawerHeader(
-      //         decoration: BoxDecoration(
-      //           gradient: LinearGradient(
-      //             colors: kGradientColor,
-      //           ),
-      //         ),
-      //         child: Text('Drawer Header'),
-      //       ),
-      //       ListTile(
-      //         title: Text('Profile'),
-      //         onTap: () {
-      //           Navigator.pushNamed(context, ProfileScreen.id);
-      //         },
-      //       ),
-      //       ListTile(
-      //         title: Text('Theme'),
-      //         onTap: () {
-      //           // Update the state of the app.
-      //           // ...
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: true,
@@ -170,14 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
             compassEnabled: true,
             initialCameraPosition:
                 CameraPosition(target: _heatmapLocation, zoom: 10.0),
-          )
-              // : Center(
-              //     child: Text(
-              //       'Loading...',
-              //       style: TextStyle(fontSize: 20),
-              //     ),
-              //   ),
-              ),
+          )),
         ),
         ClipPath(
           child: Opacity(
@@ -220,9 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<WeightedLatLng> points = <WeightedLatLng>[];
     //Can create multiple points here
     points.add(_createWeightedLatLng(location.latitude, location.longitude, 1));
-    // points.add(
-    //     _createWeightedLatLng(location.latitude - 1, location.longitude, 1));
-    // print(points.toList());
+
     return points;
   }
 
@@ -238,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _markers.add(
           Marker(
+            icon: customIcon1,
             position: LatLng(point.latitude, point.longitude),
             markerId: MarkerId(police.properties.id.toString()),
             infoWindow: InfoWindow(
