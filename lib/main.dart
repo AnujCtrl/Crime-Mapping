@@ -19,8 +19,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
-      // theme: ThemeData(fontFamily: 'Roboto Regular'),
+      // darkTheme: ThemeData(fontFamily: 'WorkSans'),
+      // theme: ThemeData.dark(fontFamily: 'Roboto Regular').copyWith(fontFamily: 'Roboto Regular'),
+      theme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
+              fontFamily: 'WorkSans',
+            ),
+        primaryTextTheme: ThemeData.dark().textTheme.apply(
+              fontFamily: 'WorkSans',
+            ),
+        accentTextTheme: ThemeData.dark().textTheme.apply(
+              fontFamily: 'WorkSans',
+            ),
+      ),
+      darkTheme: ThemeData(
+        fontFamily: 'WorkSans',
+      ),
       initialRoute: SplashScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),

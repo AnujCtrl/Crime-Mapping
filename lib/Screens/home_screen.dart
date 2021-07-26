@@ -88,21 +88,22 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: IconThemeData(color: kPrimaryTextColor),
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.transparent,
         // backgroundColor: Color(0x44000000),
         elevation: 0,
         title: Text(
           mapToggle ? "loading.." : "Hello ${currentUser.name}",
           style: TextStyle(
-              color: kPrimaryTextColor,
-              fontSize: 28,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
         ),
       ),
       body: Stack(children: [
         Scaffold(
           floatingActionButton: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: Color(0xFFFC76A1))),
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
@@ -123,11 +124,11 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: const Text(
                 'REPORT AN ISSUE',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
               ),
             ),
-            // icon: const Icon(Icons.announcement_rounded),
-            backgroundColor: Colors.red,
+            // icon: const Icon(Icons.dangerous),
+            backgroundColor: Color(0xFF1D1D27),
           ),
           bottomNavigationBar: BottomAppBar(),
           floatingActionButtonLocation:
@@ -150,21 +151,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 CameraPosition(target: _heatmapLocation, zoom: 10.0),
           )),
         ),
-        ClipPath(
-          child: Opacity(
-            opacity: 0.9,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 145,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: kGradientColor)),
-            ),
-          ),
-          clipper: CustomClipPath(),
-        )
+        // ClipPath(
+        //   child: Opacity(
+        //     opacity: 0.9,
+        //     child: Container(
+        //       width: MediaQuery.of(context).size.width,
+        //       height: 145,
+        //       decoration: BoxDecoration(
+        //           gradient: LinearGradient(
+        //               begin: Alignment.bottomLeft,
+        //               end: Alignment.topRight,
+        //               colors: kGradientColor)),
+        //     ),
+        //   ),
+        //   clipper: CustomClipPath(),
+        // )
       ]),
     );
   }
@@ -239,8 +240,48 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  String dropdownValue = 'Vandalism';
   Widget showBottomSheet() {
-    return Container();
+    return Container(
+      child: Column(
+        children: [
+          DropdownButton<String>(
+            value: dropdownValue,
+            icon: const Icon(Icons.arrow_downward),
+            iconSize: 24,
+            elevation: 16,
+            style: const TextStyle(color: Colors.deepPurple),
+            underline: Container(
+              height: 2,
+              color: Colors.deepPurpleAccent,
+            ),
+            onChanged: (String newValue) {
+              setState(() {
+                dropdownValue = newValue;
+              });
+            },
+            items: <String>[
+              'Vandalism',
+              'Theft',
+              'Terrorism',
+              'Murder',
+              'Narcotics',
+              'Domestic abuse',
+              'Assault',
+              'Other'
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: TextStyle(),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<UserProfile> getUserProfile() async {
