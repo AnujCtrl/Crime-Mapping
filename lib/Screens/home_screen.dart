@@ -242,44 +242,57 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String dropdownValue = 'Vandalism';
   Widget showBottomSheet() {
-    return Container(
-      child: Column(
-        children: [
-          DropdownButton<String>(
-            value: dropdownValue,
-            icon: const Icon(Icons.arrow_downward),
-            iconSize: 24,
-            elevation: 16,
-            style: const TextStyle(color: Colors.deepPurple),
-            underline: Container(
-              height: 2,
-              color: Colors.deepPurpleAccent,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Column(
+          children: [
+            DropdownButton<String>(
+              value: dropdownValue,
+              icon: const Icon(Icons.arrow_downward),
+              iconSize: 36,
+              elevation: 16,
+              style: const TextStyle(color: Color(0xFFFC76A1)),
+              underline: Container(
+                height: 2,
+                color: Color(0xFFC933EB),
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  dropdownValue = newValue;
+                });
+              },
+              items: <String>[
+                'Vandalism',
+                'Theft',
+                'Terrorism',
+                'Murder',
+                'Narcotics',
+                'Domestic abuse',
+                'Assault',
+                'Other'
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 32),
+                  ),
+                );
+              }).toList(),
             ),
-            onChanged: (String newValue) {
-              setState(() {
-                dropdownValue = newValue;
-              });
-            },
-            items: <String>[
-              'Vandalism',
-              'Theft',
-              'Terrorism',
-              'Murder',
-              'Narcotics',
-              'Domestic abuse',
-              'Assault',
-              'Other'
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(
-                  value,
-                  style: TextStyle(),
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: kSecondaryColor,
                 ),
-              );
-            }).toList(),
-          ),
-        ],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              width: double.infinity,
+            )
+          ],
+        ),
       ),
     );
   }
