@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import '../palette.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
@@ -118,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     addMarkers();
+    // print(count);
     // addHeatmap();
 
     return Scaffold(
@@ -125,7 +127,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Stack(children: [
           locationToggle
-              ? Text('Loading')
+              ? SpinKitDoubleBounce(
+                  color: kPrimaryColor,
+                  size: 50,
+                )
               : Scaffold(
                   floatingActionButton: FloatingActionButton.extended(
                     shape: RoundedRectangleBorder(
@@ -170,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: GoogleMap(
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
-                    heatmaps: _heatmaps,
+                    // heatmaps: _heatmaps,
                     onMapCreated: (controller) {
                       controller.setMapStyle(_mapStyle);
                       setState(() {
@@ -329,39 +334,40 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void addHeatmap() {
-    for (var police in _policeMap) {
-      LatLng point = LatLng(police.geometry.coordinates[0] - 0.1,
-          police.geometry.coordinates[1] + 0.1);
-      setState(() {
-        _heatmaps.add(Heatmap(
-            heatmapId: HeatmapId(police.properties.id.toString()),
-            points: _createPoints(LatLng(point.latitude, point.longitude)),
-            radius: 20,
-            visible: true,
-            gradient: HeatmapGradient(
-                colors: <Color>[Colors.green, Colors.red],
-                startPoints: <double>[0.2, 0.8])));
-      });
-    }
-  }
+  // void addHeatmap() {
+  //   for (var police in _policeMap) {
+  //     LatLng point = LatLng(police.geometry.coordinates[0] - 0.1,
+  //         police.geometry.coordinates[1] + 0.1);
+  //     setState(() {
+  //       _heatmaps.add(Heatmap(
+  //           heatmapId: HeatmapId(police.properties.id.toString()),
+  //           points: _createPoints(LatLng(point.latitude, point.longitude)),
+  //           radius: 20,
+  //           visible: true,
+  //           gradient: HeatmapGradient(
+  //               colors: <Color>[Colors.green, Colors.red],
+  //               startPoints: <double>[0.2, 0.8])));
+  //     });
+  //   }
+  // }
 
-  List<WeightedLatLng> _createPoints(LatLng location) {
-    final List<WeightedLatLng> points = <WeightedLatLng>[];
-    //Can create multiple points here
-    points.add(_createWeightedLatLng(location.latitude, location.longitude, 1));
-
-    return points;
-  }
-
-  WeightedLatLng _createWeightedLatLng(double lat, double lng, int weight) {
-    return WeightedLatLng(point: LatLng(lat, lng), intensity: weight);
-  }
-
+  // List<WeightedLatLng> _createPoints(LatLng location) {
+  //   final List<WeightedLatLng> points = <WeightedLatLng>[];
+  //   //Can create multiple points here
+  //   points.add(_createWeightedLatLng(location.latitude, location.longitude, 1));
+  //
+  //   return points;
+  // }
+  //
+  // WeightedLatLng _createWeightedLatLng(double lat, double lng, int weight) {
+  //   return WeightedLatLng(point: LatLng(lat, lng), intensity: weight);
+  // }
+  int count = 0;
   addMarkers() {
     for (var police in _policeMap) {
+      count++;
       LatLng point = LatLng(
-          police.geometry.coordinates[0], police.geometry.coordinates[1]);
+          police.geometry.coordinates[1], police.geometry.coordinates[0]);
       setState(() {
         _markers.add(
           Marker(
@@ -380,20 +386,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // addLocation() {
-  //   setState(() {
-  //     _markers.add(
-  //       Marker(
-  //         position: LatLng(currentLocation.latitude, currentLocation.longitude),
-  //         markerId: MarkerId('Your Location'),
-  //         infoWindow: InfoWindow(
-  //           title: 'Your Location',
-  //         ),
-  //         onTap: () {},
-  //       ),
-  //     );
-  //   });
-  // }
+  addLocation() {
+    setState(() {
+      _markers.add(
+        Marker(
+          position: LatLng(currentLocation.latitude, currentLocation.longitude),
+          markerId: MarkerId('Your Location'),
+          infoWindow: InfoWindow(
+            title: 'Your Location',
+          ),
+          onTap: () {},
+        ),
+      );
+    });
+  }
 
   String dropdownValue = 'Other';
   Widget showBottomSheet() {
@@ -525,7 +531,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.email);
                   print(report.homeAddress);
                   _firestore.collection('report').add({
-                    'caseid': report.caseId,
+                    'datetimeNo': report.caseId,
+                    'caseid': report.caseId.toString(),
                     'crimeType': report.crimeType,
                     'datetime': report.datetime,
                     'description': report.description,
