@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 Color kExtraDarkPrimaryColor = Color(0xFF231942);
 Color kDarkPrimaryColor = Color(0xFF5e548e);
+Color kButtonBackground = Color(0xFF1D1D27);
 
 Color kPrimaryColor = Color(0xFFC933EB);
 Color kSecondaryColor = Color(0xFFFC76A1);

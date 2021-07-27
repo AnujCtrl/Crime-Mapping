@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../palette.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
+import 'package:bottom_drawer/bottom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'Home_Screen';
@@ -86,87 +87,122 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.transparent,
-        // backgroundColor: Color(0x44000000),
-        elevation: 0,
-        title: Text(
-          mapToggle ? "loading.." : "Hello ${currentUser.name}",
-          style: TextStyle(
-              color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Stack(children: [
-        Scaffold(
-          floatingActionButton: FloatingActionButton.extended(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: Color(0xFFFC76A1))),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                builder: (BuildContext context) => showBottomSheet(),
-              );
-            },
-            // myController == null
-            //     ? null
-            //     : () => myController
-            //             .animateCamera(CameraUpdate.newCameraPosition(
-            //           CameraPosition(
-            //               target: LatLng(42.3601, -71.0589),
-            //               zoom: 16.0,
-            //               tilt: 30),
-            //         )),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   iconTheme: IconThemeData(color: Colors.white),
+      //   backgroundColor: Colors.transparent,
+      //   // backgroundColor: Color(0x44000000),
+      //   elevation: 0,
+      //   title: Text(
+      //     mapToggle ? "loading.." : "Hello ${currentUser.name}",
+      //     style: TextStyle(
+      //         color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+      //   ),
+      // ),
+      body: SafeArea(
+        child: Stack(children: [
+          Scaffold(
+            floatingActionButton: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Color(0xFFFC76A1))),
+              onPressed: () {
+                showModalBottomSheet<void>(
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25.0))),
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) => showBottomSheet(),
+                );
+                // controller.open();
+              },
+              // myController == null
+              //     ? null
+              //     : () => myController
+              //             .animateCamera(CameraUpdate.newCameraPosition(
+              //           CameraPosition(
+              //               target: LatLng(42.3601, -71.0589),
+              //               zoom: 16.0,
+              //               tilt: 30),
+              //         )),
 
-            label: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                'REPORT AN ISSUE',
-                style: TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
+              label: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const Text(
+                  'REPORT AN ISSUE',
+                  style: TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
+                ),
+              ),
+              // icon: const Icon(Icons.dangerous),
+              backgroundColor: Color(0xFF1D1D27),
+            ),
+            bottomNavigationBar: BottomAppBar(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            body: Container(
+                child: GoogleMap(
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              heatmaps: _heatmaps,
+              onMapCreated: (controller) {
+                controller.setMapStyle(_mapStyle);
+                setState(() {
+                  myController = controller;
+                  myController.setMapStyle(_mapStyle);
+                });
+              },
+              markers: _markers,
+              compassEnabled: true,
+              initialCameraPosition:
+                  CameraPosition(target: _heatmapLocation, zoom: 10.0),
+            )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: kSecondaryColor,
+                  width: 1,
+                ),
+                color: kButtonBackground,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(25),
+                ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.grey.withOpacity(0.5),
+                //     spreadRadius: 5,
+                //     blurRadius: 7,
+                //     offset: Offset(0, 3), // changes position of shadow
+                //   ),
+                // ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '  SPOT CRIME',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFFFC76A1),
+                          fontWeight: FontWeight.bold),
+                    ),
+                    CircleAvatar(
+                      backgroundImage: AssetImage('images/background1.jpg'),
+                      radius: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
-            // icon: const Icon(Icons.dangerous),
-            backgroundColor: Color(0xFF1D1D27),
-          ),
-          bottomNavigationBar: BottomAppBar(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          body: Container(
-              child: GoogleMap(
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            heatmaps: _heatmaps,
-            onMapCreated: (controller) {
-              controller.setMapStyle(_mapStyle);
-              setState(() {
-                myController = controller;
-                myController.setMapStyle(_mapStyle);
-              });
-            },
-            markers: _markers,
-            compassEnabled: true,
-            initialCameraPosition:
-                CameraPosition(target: _heatmapLocation, zoom: 10.0),
-          )),
-        ),
-        // ClipPath(
-        //   child: Opacity(
-        //     opacity: 0.9,
-        //     child: Container(
-        //       width: MediaQuery.of(context).size.width,
-        //       height: 145,
-        //       decoration: BoxDecoration(
-        //           gradient: LinearGradient(
-        //               begin: Alignment.bottomLeft,
-        //               end: Alignment.topRight,
-        //               colors: kGradientColor)),
-        //     ),
-        //   ),
-        //   clipper: CustomClipPath(),
-        // )
-      ]),
+          )
+        ]),
+      ),
     );
   }
 
@@ -187,7 +223,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  //heatmap generation helper functions
   List<WeightedLatLng> _createPoints(LatLng location) {
     final List<WeightedLatLng> points = <WeightedLatLng>[];
     //Can create multiple points here
@@ -197,7 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   WeightedLatLng _createWeightedLatLng(double lat, double lng, int weight) {
-    //print(WeightedLatLng(point: LatLng(lat, lng), intensity: weight));
     return WeightedLatLng(point: LatLng(lat, lng), intensity: weight);
   }
 
@@ -240,58 +274,130 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  String dropdownValue = 'Vandalism';
+  String dropdownValue = 'Other';
   Widget showBottomSheet() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return SingleChildScrollView(
       child: Container(
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              iconSize: 36,
-              elevation: 16,
-              style: const TextStyle(color: Color(0xFFFC76A1)),
-              underline: Container(
-                height: 2,
-                color: Color(0xFFC933EB),
-              ),
-              onChanged: (String newValue) {
-                setState(() {
-                  dropdownValue = newValue;
-                });
-              },
-              items: <String>[
-                'Vandalism',
-                'Theft',
-                'Terrorism',
-                'Murder',
-                'Narcotics',
-                'Domestic abuse',
-                'Assault',
-                'Other'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: AlignmentDirectional.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16, top: 8),
                   child: Text(
-                    value,
-                    style: TextStyle(fontSize: 32),
+                    'Report An Issue',
+                    style: TextStyle(color: kTextColor, fontSize: 32),
                   ),
-                );
-              }).toList(),
-            ),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: kSecondaryColor,
                 ),
-                borderRadius: BorderRadius.circular(20),
               ),
-              width: double.infinity,
-            )
-          ],
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Select Category',
+                    style: TextStyle(color: kPrimaryColor, fontSize: 24),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    iconSize: 36,
+                    elevation: 16,
+                    style: const TextStyle(color: Color(0xFFFC76A1)),
+                    underline: Container(
+                      height: 2,
+                      color: Color(0xFFC933EB),
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        dropdownValue = newValue;
+                      });
+                    },
+                    items: <String>[
+                      'Vandalism',
+                      'Theft',
+                      'Terrorism',
+                      'Murder',
+                      'Narcotics',
+                      'Domestic abuse',
+                      'Assault',
+                      'Other'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Description',
+                    style: TextStyle(color: kPrimaryColor, fontSize: 24),
+                  ),
+                ),
+              ),
+              Container(
+                height: 150,
+                width: double.infinity,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: '(Optional)',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFF6F6F6), width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: kSecondaryColor, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  minLines: 5, //Normal textInputField will be displayed
+                  maxLines: 5, // when user presses enter it will adapt to it
+                ),
+              ),
+              FloatingActionButton.extended(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Color(0xFFFC76A1))),
+                onPressed: () {},
+                label: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text(
+                    'REPORT',
+                    style: TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
+                  ),
+                ),
+                backgroundColor: Color(0xFF1D1D27),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -314,22 +420,4 @@ class _HomeScreenState extends State<HomeScreen> {
     print(user.homeAddress);
     return user;
   }
-}
-
-class CustomClipPath extends CustomClipper<Path> {
-  var radius = 2.0;
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 100);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 100);
-    path.lineTo(size.width, 0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
