@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crimemapping/Model/police_data_model.dart';
+import 'package:crimemapping/Model/report_class.dart';
 import 'package:crimemapping/Model/userclass.dart';
-import 'package:crimemapping/Screens/profile_settings_screen.dart';
+
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:geolocator/geolocator.dart';
-//import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:geolocator/geolocator.dart';
 import '../palette.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
-import 'package:bottom_drawer/bottom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'Home_Screen';
@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime currentPhoneDate = DateTime.now();
   BitmapDescriptor customIcon1;
   final _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,14 +28,17 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Feature> _policeMap = List<Feature>();
   final Set<Heatmap> _heatmaps = {};
   final Set<Marker> _markers = {};
-  LatLng _heatmapLocation = LatLng(9.0820, 8.6753);
+  LatLng testLocation = LatLng(9.0820, 8.6750);
   String _mapStyle;
   bool mapToggle;
+  bool locationToggle;
   GoogleMapController myController;
-  // var currentLocation;
+  Report report = Report();
+  var currentLocation;
   @override
   void initState() {
     super.initState();
+    print(currentPhoneDate);
     getCurrentUser();
     setCustomMarker();
     getUserProfile().then((value) {
@@ -43,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
     mapToggle = true;
+    locationToggle = true;
     ServicesPoliceMap.getPoliceMap().then((value) {
       setState(() {
         _policeMap = value;
@@ -54,12 +59,14 @@ class _HomeScreenState extends State<HomeScreen> {
       _mapStyle = string;
     });
 
-    // Geolocator.getCurrentPosition().then((currloc) {
-    //   setState(() {
-    //     currentLocation = currloc;
-    //     mapToggle = true;
-    //   });
-    // });
+    Geolocator.getCurrentPosition().then((currloc) {
+      setState(() {
+        currentLocation = currloc;
+        print('This is my location');
+        print(currentLocation);
+        locationToggle = false;
+      });
+    });
   }
 
   Future<void> setCustomMarker() async {
@@ -79,85 +86,106 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void getReportInfo() {
+    setState(() {
+      String stringdt;
+      report.homeAddress = currentUser.homeAddress; //'
+      report.name = currentUser.name; //'
+      report.phoneNo = currentUser.phoneNo; //'
+      report.gender = currentUser.gender == 1 ? "Male" : "Female"; //'
+      report.email = currentUser.email; //'
+      report.datetime = currentPhoneDate;
+      report.emerPhoneNo = currentUser.emerPhoneNo; //'
+      report.location =
+          LatLng(currentLocation.latitude, currentLocation.longitude);
+      stringdt = currentPhoneDate.toString();
+      stringdt = stringdt[2] +
+          stringdt[3] +
+          stringdt[5] +
+          stringdt[6] +
+          stringdt[8] +
+          stringdt[9] +
+          stringdt[11] +
+          stringdt[12] +
+          stringdt[14] +
+          stringdt[15] +
+          stringdt[17] +
+          stringdt[18];
+      report.caseId = int.parse(stringdt);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     addMarkers();
     // addHeatmap();
-    addLocation();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   iconTheme: IconThemeData(color: Colors.white),
-      //   backgroundColor: Colors.transparent,
-      //   // backgroundColor: Color(0x44000000),
-      //   elevation: 0,
-      //   title: Text(
-      //     mapToggle ? "loading.." : "Hello ${currentUser.name}",
-      //     style: TextStyle(
-      //         color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-      //   ),
-      // ),
       body: SafeArea(
         child: Stack(children: [
-          Scaffold(
-            floatingActionButton: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Color(0xFFFC76A1))),
-              onPressed: () {
-                showModalBottomSheet<void>(
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(25.0))),
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (BuildContext context) => showBottomSheet(),
-                );
-                // controller.open();
-              },
-              // myController == null
-              //     ? null
-              //     : () => myController
-              //             .animateCamera(CameraUpdate.newCameraPosition(
-              //           CameraPosition(
-              //               target: LatLng(42.3601, -71.0589),
-              //               zoom: 16.0,
-              //               tilt: 30),
-              //         )),
+          locationToggle
+              ? Text('Loading')
+              : Scaffold(
+                  floatingActionButton: FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Color(0xFFFC76A1))),
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(25.0))),
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) => showBottomSheet(),
+                      );
+                      // controller.open();
+                    },
+                    // myController == null
+                    //     ? null
+                    //     : () => myController
+                    //             .animateCamera(CameraUpdate.newCameraPosition(
+                    //           CameraPosition(
+                    //               target: LatLng(42.3601, -71.0589),
+                    //               zoom: 16.0,
+                    //               tilt: 30),
+                    //         )),
 
-              label: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
-                  'REPORT AN ISSUE',
-                  style: TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
+                    label: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        'REPORT AN ISSUE',
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xFFFC76A1)),
+                      ),
+                    ),
+                    // icon: const Icon(Icons.dangerous),
+                    backgroundColor: Color(0xFF1D1D27),
+                  ),
+                  bottomNavigationBar: BottomAppBar(),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  body: Container(
+                      child: GoogleMap(
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                    heatmaps: _heatmaps,
+                    onMapCreated: (controller) {
+                      controller.setMapStyle(_mapStyle);
+                      setState(() {
+                        myController = controller;
+                        myController.setMapStyle(_mapStyle);
+                      });
+                    },
+                    markers: _markers,
+                    compassEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(currentLocation.latitude,
+                            currentLocation.longitude),
+                        zoom: 10.0),
+                  )),
                 ),
-              ),
-              // icon: const Icon(Icons.dangerous),
-              backgroundColor: Color(0xFF1D1D27),
-            ),
-            bottomNavigationBar: BottomAppBar(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-            body: Container(
-                child: GoogleMap(
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              heatmaps: _heatmaps,
-              onMapCreated: (controller) {
-                controller.setMapStyle(_mapStyle);
-                setState(() {
-                  myController = controller;
-                  myController.setMapStyle(_mapStyle);
-                });
-              },
-              markers: _markers,
-              compassEnabled: true,
-              initialCameraPosition:
-                  CameraPosition(target: _heatmapLocation, zoom: 10.0),
-            )),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -178,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '  SPOT CRIME',
+                      mapToggle && locationToggle ? 'Loading' : '  SPOT CRIME',
                       style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFFFC76A1),
@@ -216,11 +244,6 @@ class _HomeScreenState extends State<HomeScreen> {
             'Profile',
           ),
           content: SingleChildScrollView(
-              // child: ListBody(
-              //   children: <Widget>[
-              //     Image.asset('images/legend.png'),
-              //   ],
-              // ),
               child: Column(
             children: [
               CircleAvatar(
@@ -257,6 +280,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           )),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialogReport() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Issue Reported',
+                style: TextStyle(color: kSecondaryColor, fontSize: 24),
+              ),
+            ),
+          ),
           actions: <Widget>[
             FlatButton(
               child: Text(
@@ -324,22 +380,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  addLocation() {
-    setState(() {
-      _markers.add(
-        Marker(
-          // icon: Icon(location),
-          position: LatLng(
-              _heatmapLocation.latitude - 0.1, _heatmapLocation.longitude),
-          markerId: MarkerId('Your Location'),
-          infoWindow: InfoWindow(
-            title: 'Your Location',
-          ),
-          onTap: () {},
-        ),
-      );
-    });
-  }
+  // addLocation() {
+  //   setState(() {
+  //     _markers.add(
+  //       Marker(
+  //         position: LatLng(currentLocation.latitude, currentLocation.longitude),
+  //         markerId: MarkerId('Your Location'),
+  //         infoWindow: InfoWindow(
+  //           title: 'Your Location',
+  //         ),
+  //         onTap: () {},
+  //       ),
+  //     );
+  //   });
+  // }
 
   String dropdownValue = 'Other';
   Widget showBottomSheet() {
@@ -358,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(bottom: 16, top: 8),
                   child: Text(
                     'Report An Issue',
-                    style: TextStyle(color: kTextColor, fontSize: 32),
+                    style: TextStyle(color: kTextColor, fontSize: 24),
                   ),
                 ),
               ),
@@ -368,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Select Category',
-                    style: TextStyle(color: kPrimaryColor, fontSize: 24),
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20),
                   ),
                 ),
               ),
@@ -379,7 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: DropdownButton<String>(
                     value: dropdownValue,
                     icon: const Icon(Icons.arrow_downward),
-                    iconSize: 36,
+                    iconSize: 24,
                     elevation: 16,
                     style: const TextStyle(color: Color(0xFFFC76A1)),
                     underline: Container(
@@ -389,6 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onChanged: (String newValue) {
                       setState(() {
                         dropdownValue = newValue;
+                        report.crimeType = dropdownValue;
                       });
                     },
                     items: <String>[
@@ -405,7 +460,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         value: value,
                         child: Text(
                           value,
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 20),
                         ),
                       );
                     }).toList(),
@@ -418,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Description',
-                    style: TextStyle(color: kPrimaryColor, fontSize: 24),
+                    style: TextStyle(color: kPrimaryColor, fontSize: 20),
                   ),
                 ),
               ),
@@ -426,6 +481,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 150,
                 width: double.infinity,
                 child: TextField(
+                  onChanged: (value) {
+                    report.description = value;
+                  },
                   decoration: InputDecoration(
                     hintText: '(Optional)',
                     contentPadding:
@@ -453,7 +511,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                     side: BorderSide(color: Color(0xFFFC76A1))),
-                onPressed: () {},
+                onPressed: () {
+                  getReportInfo();
+                  print(report.description);
+                  print(report.name);
+                  print(report.gender);
+                  print(report.crimeType);
+                  print(report.caseId);
+                  print(report.datetime);
+                  print(report.phoneNo);
+                  print(report.emerPhoneNo);
+                  print(report.location);
+                  print(report.email);
+                  print(report.homeAddress);
+                  _firestore.collection('report').add({
+                    'caseid': report.caseId,
+                    'crimeType': report.crimeType,
+                    'datetime': report.datetime,
+                    'description': report.description,
+                    'email': report.email,
+                    'emerPhoneNo': report.emerPhoneNo,
+                    'gender': report.gender,
+                    'homeaddress': report.homeAddress,
+                    'location': GeoPoint(
+                        report.location.latitude, report.location.longitude),
+                    'name': report.name,
+                    'phoneNo': report.phoneNo,
+                  });
+                  Navigator.pop(context);
+                  _showMyDialogReport();
+                },
                 label: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: const Text(

@@ -188,7 +188,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onChanged: (int val) {
                                   setState(() {
                                     userProfile.gender = val;
-                                    print(userProfile.gender);
                                   });
                                 },
                               ),
@@ -203,7 +202,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onChanged: (int val) {
                                   setState(() {
                                     userProfile.gender = val;
-                                    print(userProfile.gender);
                                   });
                                 },
                               ),
@@ -223,21 +221,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20)),
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 150.0),
-                              //   child: TextButton(
-                              //     onPressed: () {
-                              //       showModalBottomSheet<void>(
-                              //           context: context,
-                              //           builder: (BuildContext context) =>
-                              //               SetAddressBottomSheet());
-                              //     },
-                              //     child: Icon(
-                              //       Icons.edit,
-                              //       color: kPrimaryColor,
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
                           Padding(
