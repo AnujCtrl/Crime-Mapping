@@ -171,17 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.all(
                   Radius.circular(25),
                 ),
-                // boxShadow: [
-                //   BoxShadow(
-                //     color: Colors.grey.withOpacity(0.5),
-                //     spreadRadius: 5,
-                //     blurRadius: 7,
-                //     offset: Offset(0, 3), // changes position of shadow
-                //   ),
-                // ],
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.only(left: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -192,9 +184,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Color(0xFFFC76A1),
                           fontWeight: FontWeight.bold),
                     ),
-                    CircleAvatar(
-                      backgroundImage: AssetImage('images/background1.jpg'),
-                      radius: 20,
+                    FloatingActionButton(
+                      backgroundColor: kButtonBackground,
+                      onPressed: () {
+                        _showMyDialog();
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage('images/background1.jpg'),
+                        radius: 20,
+                      ),
                     ),
                   ],
                 ),
@@ -203,6 +201,75 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ]),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            'Profile',
+          ),
+          content: SingleChildScrollView(
+              // child: ListBody(
+              //   children: <Widget>[
+              //     Image.asset('images/legend.png'),
+              //   ],
+              // ),
+              child: Column(
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage('images/background1.jpg'),
+                radius: 50,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${currentUser.name}',
+                  style: TextStyle(color: kSecondaryColor, fontSize: 24),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  '${currentUser.email}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  '${currentUser.phoneNo}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  '${currentUser.homeAddress}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          )),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
