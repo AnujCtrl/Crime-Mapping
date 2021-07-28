@@ -1,4 +1,5 @@
 class UserProfile {
+  String photoUrl;
   String name;
   String email;
   int phoneNo;

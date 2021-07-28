@@ -1,11 +1,17 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:crimemapping/Model/userclass.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../palette.dart';
 import 'login_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   static String id = 'Profile Screen';
@@ -14,6 +20,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String photoImageUrl = 'https://i.imgur.com/oO6KOxx.png';
+
+  File profileImage;
   final _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   UserProfile userProfile = UserProfile();
@@ -24,6 +33,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getCurrentUser();
     userProfile.gender = 0;
     super.initState();
+  }
+
+  Future getImage() async {
+    var tempImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      print(tempImage.path);
+      profileImage = File(tempImage.path);
+    });
+    print('done image picking');
+  }
+
+  uploadImage(File file) async {
+    print(loggedInUser.email);
+    // var randomNo = Random(25);
+    final UploadTask firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('${loggedInUser.email}')
+        .child('default.jpg')
+        .putFile(file);
+
+    firebaseStorageRef.then((value) {
+      print('done uploading');
+      photoImageUrl = value.toString();
+      setState(() {
+        userProfile.photoUrl = photoImageUrl;
+      });
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   void getCurrentUser() async {
@@ -80,12 +118,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Center(
                     child: CircleAvatar(
-                      backgroundImage: AssetImage('images/background1.jpg'),
+                      backgroundImage: NetworkImage(photoImageUrl),
                       radius: 80,
                     ),
                   ),
                   ButtonTile(
                     text: 'CHANGE',
+                    onPress: () {
+                      getImage();
+                      uploadImage(profileImage);
+                    },
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -107,27 +149,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20)),
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 80.0),
-                              //   child: TextButton(
-                              //     child: Icon(
-                              //       Icons.edit,
-                              //       color: kPrimaryColor,
-                              //     ),
-                              //     // child: Image(
-                              //     //   height: 24,
-                              //     //   width: 24,
-                              //     //   image: AssetImage('images/edit (1)@3x.png'),
-                              //     // ),
-                              //     onPressed: () {
-                              //       showModalBottomSheet<void>(
-                              //         context: context,
-                              //         builder: (BuildContext context) =>
-                              //             PersonalInfoBottomSheet(),
-                              //       );
-                              //     },
-                              //   ),
-                              // ),
                             ],
                           ),
                           Padding(
@@ -142,19 +163,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: TextField(
-                          //     keyboardType: TextInputType.emailAddress,
-                          //     cursorColor: kSecondaryColor,
-                          //     decoration: kTextFieldDecoration.copyWith(
-                          //       labelText: 'Email Id',
-                          //     ),
-                          //     onChanged: (value) {
-                          //       userProfile.email = value;
-                          //     },
-                          //   ),
-                          // ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextField(
@@ -253,6 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 24),
                               child: ButtonTile(
                                 onPress: () {
+                                  print(userProfile.photoUrl);
                                   print(userProfile.name);
                                   print(userProfile.email);
                                   print(userProfile.phoneNo);
@@ -260,6 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   print(userProfile.homeAddress);
                                   print(userProfile.emerPhoneNo);
                                   _firestore.collection('user').add({
+                                    'photoUrl': userProfile.photoUrl,
                                     'email': userProfile.email,
                                     'emerPhoneNo': userProfile.emerPhoneNo,
                                     'gender': userProfile.gender,

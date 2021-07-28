@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         fontFamily: 'WorkSans',
       ),
-      initialRoute: SplashScreen.id,
+      initialRoute: ProfileScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
         SplashScreen.id: (context) => SplashScreen(),
