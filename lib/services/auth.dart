@@ -120,12 +120,12 @@ Future<User> signUp(String email, String password, BuildContext context) async {
 //       .signInWithCredential(facebookAuthCredential);
 // }
 
-Future<bool> signOutUser() async {
+Future<void> signOutUser() async {
   User user = await auth.currentUser;
-  print(user.providerData[1].providerId);
+  // print(user.providerData[1].providerId);
   // if (user.providerData[1].providerId == 'google.com') {
   //   await gooleSignIn.disconnect();
   // }
   await auth.signOut();
-  return Future.value(true);
+  // return Future.value(true);
 }

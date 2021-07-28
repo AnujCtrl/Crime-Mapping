@@ -124,9 +124,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
                             onPress: () {
-                              signin(email, password, context).whenComplete(
-                                  () => Navigator.pushNamed(
-                                      context, HomeScreen.id));
+                              if (email != null && password != null) {
+                                signin(email, password, context).whenComplete(
+                                    () => Navigator.pushNamed(
+                                        context, HomeScreen.id));
+                              }
                             },
                             text: 'Login',
                           ),

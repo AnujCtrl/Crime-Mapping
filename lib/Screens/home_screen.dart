@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crimemapping/Model/police_data_model.dart';
 import 'package:crimemapping/Model/report_class.dart';
 import 'package:crimemapping/Model/userclass.dart';
+import 'package:crimemapping/Screens/Welcome_screen.dart';
 
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -283,6 +284,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 16),
                 ),
               ),
+              FlatButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushNamed(context, WelcomeScreen.id);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                      Icon(
+                        Icons.logout,
+                        size: 24,
+                      ),
+                    ],
+                  ))
             ],
           )),
           actions: <Widget>[
@@ -455,7 +477,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     items: <String>[
                       'Vandalism',
                       'Theft',
-                      'Terrorism',
+                      'Suicide',
+                      'Corruption'
+                          'Terrorism',
                       'Murder',
                       'Narcotics',
                       'Domestic abuse',
