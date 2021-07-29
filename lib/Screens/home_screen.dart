@@ -13,6 +13,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import '../palette.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'Home_Screen';
@@ -46,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
     getUserProfile().then((value) {
       setState(() {
         currentUser = value;
+        print(currentUser.email);
+        print(currentUser.photoUrl);
       });
     });
     mapToggle = true;
@@ -253,7 +256,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage('images/background1.jpg'),
+                backgroundImage: currentUser.photoUrl == null
+                    ? NetworkImage('https://i.imgur.com/oO6KOxx.png')
+                    : NetworkImage(currentUser.photoUrl),
                 radius: 50,
               ),
               Padding(
