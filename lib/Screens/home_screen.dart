@@ -227,7 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _showMyDialog();
                       },
                       child: CircleAvatar(
-                        backgroundImage: AssetImage('images/background1.jpg'),
+                        backgroundImage: currentUser.photoUrl == null
+                            ? NetworkImage('https://i.imgur.com/oO6KOxx.png')
+                            : NetworkImage(currentUser.photoUrl),
                         radius: 20,
                       ),
                     ),
@@ -599,6 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (var userinfo in usersinfo.docs) {
       if (userinfo.data()['email'] == loggedInUser.email) {
         // print(userinfo.data());
+        user.photoUrl = userinfo['photoUrl'];
         user.name = userinfo['name'];
         user.email = userinfo['email'];
         user.phoneNo = userinfo['phoneNo'];
