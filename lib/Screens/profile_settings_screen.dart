@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../palette.dart';
 import 'login_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  DateTime currentPhoneDate = DateTime.now();
   String photoImageUrl = 'https://i.imgur.com/oO6KOxx.png';
 
   File profileImage;
@@ -37,26 +39,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future getImage() async {
     var tempImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      print(tempImage.path);
-      profileImage = File(tempImage.path);
-    });
+
+    print(tempImage.path);
+    profileImage = File(tempImage.path);
     print('done image picking');
+    await uploadImage(profileImage);
   }
 
   uploadImage(File file) async {
     print(loggedInUser.email);
+    String photoImageUrl = 'https://i.imgur.com/oO6KOxx.png';
     // var randomNo = Random(25);
-    final UploadTask firebaseStorageRef = FirebaseStorage.instance
+    final Reference firebaseStorageRef = FirebaseStorage.instance
         .ref()
         .child('${loggedInUser.email}')
-        .child('default.jpg')
-        .putFile(file);
+        .child('$currentPhoneDate.jpg');
+    UploadTask task = firebaseStorageRef.putFile(file);
+    Future<String> getUrl() async {
+      return await FirebaseStorage.instance
+          .ref()
+          .child('${loggedInUser.email}')
+          .child('$currentPhoneDate.jpg')
+          .getDownloadURL();
+    }
 
-    firebaseStorageRef.then((value) {
+    getUrl().then((value) {
       print('done uploading');
-      photoImageUrl = value.toString();
+
       setState(() {
+        photoImageUrl = value;
+        print(photoImageUrl);
         userProfile.photoUrl = photoImageUrl;
       });
     }).catchError((e) {
@@ -125,8 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ButtonTile(
                     text: 'CHANGE',
                     onPress: () {
-                      getImage();
-                      uploadImage(profileImage);
+                      setState(() {
+                        getImage();
+                      });
                     },
                   ),
                   Container(
