@@ -47,8 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
     getUserProfile().then((value) {
       setState(() {
         currentUser = value;
-        print(currentUser.email);
-        print(currentUser.photoUrl);
       });
     });
     mapToggle = true;
@@ -610,7 +608,6 @@ class _HomeScreenState extends State<HomeScreen> {
         user.gender = userinfo['gender'];
       }
     }
-    print(user.homeAddress);
     return user;
   }
 }
