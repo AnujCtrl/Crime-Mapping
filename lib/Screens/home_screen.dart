@@ -3,6 +3,7 @@ import 'package:crimemapping/Model/police_data_model.dart';
 import 'package:crimemapping/Model/report_class.dart';
 import 'package:crimemapping/Model/userclass.dart';
 import 'package:crimemapping/Screens/Welcome_screen.dart';
+import 'package:crimemapping/services/caseLocation.dart';
 
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -320,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: kSecondaryColor),
               ),
               onPressed: () {
+                
                 Navigator.of(context).pop();
               },
             ),
@@ -548,7 +550,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(18.0),
                     side: BorderSide(color: Color(0xFFFC76A1))),
                 onPressed: () {
+                  
                   getReportInfo();
+                  sendToDatabase(report.caseId, report.location.latitude,report.location.longitude);
                   print(report.description);
                   print(report.name);
                   print(report.gender);
