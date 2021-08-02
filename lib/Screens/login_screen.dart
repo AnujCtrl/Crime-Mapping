@@ -108,12 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ? Icon(
                                         CupertinoIcons.eye_slash_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       )
                                     : Icon(
                                         CupertinoIcons.eye_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       ),
                                 label: SizedBox(),
                               ),
@@ -133,16 +133,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Login',
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Center(
-                              child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: kTextColor,
-                            ),
-                          )),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(vertical: 24),
+                        //   child: Center(
+                        //       child: Text(
+                        //     'Forgot Password?',
+                        //     style: TextStyle(
+                        //       color: kTextColor,
+                        //     ),
+                        //   )),
+                        // ),
                         Align(
                           alignment: AlignmentDirectional.bottomCenter,
                           child: Row(
@@ -150,9 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Text(
                                 'Don\'t have an account?',
-                                style: TextStyle(
-                                  color: kTextColor,
-                                ),
+                                style: TextStyle(),
                               ),
                               TextButton(
                                 onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:crimemapping/Screens/signup_screen.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
+import 'package:crimemapping/palette.dart';
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';
@@ -43,7 +44,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               alignment: AlignmentDirectional.bottomCenter,
               child: Text(
                 'Terms of Service & Privacy Policy',
-                style: TextStyle(decoration: TextDecoration.underline),
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: kSecondaryColor),
               ),
             ),
           )

@@ -6,7 +6,7 @@ Color kButtonBackground = Color(0xFF1D1D27);
 
 Color kPrimaryColor = Color(0xFFC933EB);
 Color kSecondaryColor = Color(0xFFFC76A1);
-Color kBackGroundColor = Color(0xFF1D1D26);
+Color kBackGroundColor = Color(0xFF424242);
 Color kLightPrimaryColor = Color(0xFFbe95c4);
 Color kExtraLightPrimaryColor = Color(0xFFe0b1cb);
 var kGradientColor = [

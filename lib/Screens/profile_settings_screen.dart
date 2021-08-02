@@ -132,6 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Center(
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(photoImageUrl),
+                      backgroundColor: kBackGroundColor,
                       radius: 80,
                     ),
                   ),

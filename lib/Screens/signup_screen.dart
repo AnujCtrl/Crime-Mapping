@@ -111,12 +111,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ? Icon(
                                         CupertinoIcons.eye_slash_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       )
                                     : Icon(
                                         CupertinoIcons.eye_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       ),
                                 label: SizedBox(),
                               ),
@@ -144,12 +144,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ? Icon(
                                         CupertinoIcons.eye_slash_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       )
                                     : Icon(
                                         CupertinoIcons.eye_fill,
                                         size: 16,
-                                        color: kTextColor,
+                                        color: kPrimaryColor,
                                       ),
                                 label: SizedBox(),
                               ),

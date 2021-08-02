@@ -561,7 +561,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.homeAddress);
                   print(report.photoUrl);
                   _firestore.collection('report').add({
-                    'photoUrl': report.photoUrl,
+                    'photoUrl': report.photoUrl == null
+                        ? 'https://i.imgur.com/oO6KOxx.png'
+                        : report.photoUrl,
                     'datetimeNo': report.caseId,
                     'caseid': report.caseId.toString(),
                     'crimeType': report.crimeType,
