@@ -228,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundImage: currentUser.photoUrl == null
                             ? NetworkImage('https://i.imgur.com/oO6KOxx.png')
                             : NetworkImage(currentUser.photoUrl),
+                        backgroundColor: kBackGroundColor,
                         radius: 20,
                       ),
                     ),
