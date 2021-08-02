@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print(currentPhoneDate);
     getCurrentUser();
     setCustomMarker();
     getUserProfile().then((value) {
@@ -97,11 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
       report.phoneNo = currentUser.phoneNo; //'
       report.gender = currentUser.gender == 1 ? "Male" : "Female"; //'
       report.email = currentUser.email; //'
-      report.datetime = currentPhoneDate;
+      report.datetime = DateTime.now();
       report.emerPhoneNo = currentUser.emerPhoneNo; //'
       report.location =
           LatLng(currentLocation.latitude, currentLocation.longitude);
-      stringdt = currentPhoneDate.toString();
+      stringdt = DateTime.now().toString();
       stringdt = stringdt[2] +
           stringdt[3] +
           stringdt[5] +
