@@ -115,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
           stringdt[17] +
           stringdt[18];
       report.caseId = int.parse(stringdt);
+      report.photoUrl = currentUser.photoUrl;
     });
   }
 
@@ -483,8 +484,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Vandalism',
                       'Theft',
                       'Suicide',
-                      'Corruption'
-                          'Terrorism',
+                      'Corruption',
+                      'Terrorism',
                       'Murder',
                       'Narcotics',
                       'Domestic abuse',
@@ -559,7 +560,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.location);
                   print(report.email);
                   print(report.homeAddress);
+                  print(report.photoUrl);
                   _firestore.collection('report').add({
+                    'photoUrl': report.photoUrl,
                     'datetimeNo': report.caseId,
                     'caseid': report.caseId.toString(),
                     'crimeType': report.crimeType,
