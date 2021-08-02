@@ -4,7 +4,7 @@ import 'package:crimemapping/Model/report_class.dart';
 import 'package:crimemapping/Model/userclass.dart';
 import 'package:crimemapping/Screens/Welcome_screen.dart';
 import 'package:crimemapping/services/caseLocation.dart';
-
+import 'package:crimemapping/services/authentication.dart';
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -292,10 +292,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               FlatButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushNamed(context, WelcomeScreen.id);
-                  },
+                  onPressed: () => signOutUser().whenComplete(() =>
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => WelcomeScreen()),
+                          (route) => false)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -321,7 +322,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: kSecondaryColor),
               ),
               onPressed: () {
-                
                 Navigator.of(context).pop();
               },
             ),
@@ -550,9 +550,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(18.0),
                     side: BorderSide(color: Color(0xFFFC76A1))),
                 onPressed: () {
-                  
                   getReportInfo();
-                  sendToDatabase(report.caseId, report.location.latitude,report.location.longitude);
+                  sendToDatabase(report.caseId, report.location.latitude,
+                      report.location.longitude);
                   print(report.description);
                   print(report.name);
                   print(report.gender);
@@ -565,24 +565,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.email);
                   print(report.homeAddress);
                   print(report.photoUrl);
-                  _firestore.collection('report').add({
-                    'photoUrl': report.photoUrl == null
-                        ? 'https://i.imgur.com/oO6KOxx.png'
-                        : report.photoUrl,
-                    'datetimeNo': report.caseId,
-                    'caseid': report.caseId.toString(),
-                    'crimeType': report.crimeType,
-                    'datetime': report.datetime,
-                    'description': report.description,
-                    'email': report.email,
-                    'emerPhoneNo': report.emerPhoneNo,
-                    'gender': report.gender,
-                    'homeaddress': report.homeAddress,
-                    'location': GeoPoint(
-                        report.location.latitude, report.location.longitude),
-                    'name': report.name,
-                    'phoneNo': report.phoneNo,
-                  });
+                  if (passError() == 0) {
+                    _firestore.collection('report').add({
+                      'photoUrl': report.photoUrl == null
+                          ? 'https://i.imgur.com/oO6KOxx.png'
+                          : report.photoUrl,
+                      'datetimeNo': report.caseId,
+                      'caseid': report.caseId.toString(),
+                      'crimeType': report.crimeType,
+                      'datetime': report.datetime,
+                      'description': report.description == null
+                          ? 'Description not Specfied by the User'
+                          : report.description,
+                      'email': report.email,
+                      'emerPhoneNo': report.emerPhoneNo,
+                      'gender': report.gender,
+                      'homeaddress': report.homeAddress,
+                      'location': GeoPoint(
+                          report.location.latitude, report.location.longitude),
+                      'name': report.name,
+                      'phoneNo': report.phoneNo,
+                    });
+                  } else {
+                    _showMyDialogReportErr(getMessage(passError()));
+                  }
+
                   Navigator.pop(context);
                   _showMyDialogReport();
                 },
@@ -599,6 +606,59 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  int passError() {
+    int passError;
+    if (report.crimeType == null) {
+      passError = 1;
+    } else {
+      passError = 0;
+    }
+    return passError;
+  }
+
+  String getMessage(int errorNo) {
+    String errorText;
+    switch (errorNo) {
+      case 1:
+        errorText = 'Select Crime Type';
+        break;
+    }
+    return errorText;
+  }
+
+  Future<void> _showMyDialogReportErr(String input) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                input,
+                style: TextStyle(color: kSecondaryColor, fontSize: 16),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

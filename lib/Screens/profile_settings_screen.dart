@@ -283,16 +283,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   print(userProfile.gender);
                                   print(userProfile.homeAddress);
                                   print(userProfile.emerPhoneNo);
-                                  _firestore.collection('user').add({
-                                    'photoUrl': userProfile.photoUrl,
-                                    'email': userProfile.email,
-                                    'emerPhoneNo': userProfile.emerPhoneNo,
-                                    'gender': userProfile.gender,
-                                    'homeAddress': userProfile.homeAddress,
-                                    'name': userProfile.name,
-                                    'phoneNo': userProfile.phoneNo,
-                                  });
-                                  Navigator.pushNamed(context, LoginScreen.id);
+                                  if (passError() == 0) {
+                                    _firestore.collection('user').add({
+                                      'photoUrl': userProfile.photoUrl == null
+                                          ? 'https://i.imgur.com/oO6KOxx.png'
+                                          : userProfile.photoUrl,
+                                      'email': userProfile.email,
+                                      'emerPhoneNo': userProfile.emerPhoneNo,
+                                      'gender': userProfile.gender,
+                                      'homeAddress': userProfile.homeAddress,
+                                      'name': userProfile.name,
+                                      'phoneNo': userProfile.phoneNo,
+                                    });
+                                    Navigator.pushNamed(
+                                        context, LoginScreen.id);
+                                  } else {
+                                    _showMyDialogProfile(
+                                        getMessage(passError()));
+                                  }
                                 },
                                 text: '           Save           ',
                               ),
@@ -308,6 +316,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         ],
       ),
+    );
+  }
+
+  int passError() {
+    int passError;
+    if (userProfile.name == null) {
+      passError = 1;
+    } else if (userProfile.phoneNo == null) {
+      passError = 2;
+    } else if (userProfile.emerPhoneNo == null) {
+      passError = 3;
+    } else if (userProfile.homeAddress == null) {
+      passError = 4;
+    } else if (userProfile.gender == 0) {
+      passError = 5;
+    } else if (userProfile.phoneNo < 10) {
+      passError = 6;
+    } else if (userProfile.emerPhoneNo < 10) {
+      passError = 7;
+    } else {
+      passError = 0;
+    }
+    return passError;
+  }
+
+  String getMessage(int errorNo) {
+    String errorText;
+    switch (errorNo) {
+      case 1:
+        errorText = 'Enter Name';
+        break;
+      case 2:
+        errorText = 'Enter Your Phone Number';
+        break;
+      case 3:
+        errorText = 'Enter Emergency Phone Number';
+        break;
+      case 4:
+        errorText = 'Enter Home Address';
+        break;
+      case 5:
+        errorText = 'Enter Select Gender';
+        break;
+      case 6:
+        errorText = 'Phone Number should have a least 10 numbers';
+        break;
+      case 7:
+        errorText = 'Emergency Phone Number should have a least 10 numbers';
+        break;
+    }
+    return errorText;
+  }
+
+  Future<void> _showMyDialogProfile(String input) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                input,
+                style: TextStyle(color: kSecondaryColor, fontSize: 16),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,27 +1,60 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../palette.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 // final gooleSignIn = GoogleSignIn();
 
-showErrDialog(BuildContext context, String err) {
-  // to hide the keyboard, if it is still p
-  FocusScope.of(context).requestFocus(new FocusNode());
-  return showDialog(
+// showErrDialog(BuildContext context, String err) {
+//   // to hide the keyboard, if it is still p
+//   FocusScope.of(context).requestFocus(new FocusNode());
+//   return showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         title: Text("Error"),
+//         content: Text(err),
+//         actions: <Widget>[
+//           OutlineButton(
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//             child: Text("Ok"),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
+Future<void> showErrDialog(BuildContext context, String input) async {
+  return showDialog<void>(
     context: context,
-    builder: (context) {
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Error"),
-        content: Text(err),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              input,
+              style: TextStyle(color: kSecondaryColor, fontSize: 16),
+            ),
+          ),
+        ),
         actions: <Widget>[
-          OutlineButton(
+          FlatButton(
+            child: Text(
+              'OK',
+              style: TextStyle(color: kSecondaryColor),
+            ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
-            child: Text("Ok"),
           ),
         ],
       );
@@ -60,24 +93,22 @@ Future<User> signin(String email, String password, BuildContext context) async {
     // simply passing error code as a message
     print(e.code);
     switch (e.code) {
-      case 'ERROR_INVALID_EMAIL':
+      case 'invalid-email':
         showErrDialog(context, e.code);
         break;
-      case 'ERROR_WRONG_PASSWORD':
+      case 'wrong-password':
         showErrDialog(context, e.code);
         break;
-      case 'ERROR_USER_NOT_FOUND':
+      case 'user-not-found':
         showErrDialog(context, e.code);
         break;
-      case 'ERROR_USER_DISABLED':
+      case 'user-disabled':
         showErrDialog(context, e.code);
         break;
       case 'ERROR_TOO_MANY_REQUESTS':
         showErrDialog(context, e.code);
         break;
       case 'ERROR_OPERATION_NOT_ALLOWED':
-        showErrDialog(context, e.code);
-        break;
     }
     return Future.value(null);
   }
@@ -93,13 +124,13 @@ Future<User> signUp(String email, String password, BuildContext context) async {
     // return Future.value(true);
   } catch (error) {
     switch (error.code) {
-      case 'ERROR_EMAIL_ALREADY_IN_USE':
+      case 'auth/email-already-in-use':
         showErrDialog(context, "Email Already Exists");
         break;
-      case 'ERROR_INVALID_EMAIL':
+      case 'auth/invalid-email':
         showErrDialog(context, "Invalid Email Address");
         break;
-      case 'ERROR_WEAK_PASSWORD':
+      case 'auth/weak-password':
         showErrDialog(context, "Please Choose a stronger password");
         break;
     }

@@ -1,6 +1,6 @@
 import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/Widgets/button_tile.dart';
-import 'package:crimemapping/services/auth.dart';
+import 'package:crimemapping/services/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -156,20 +156,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         ),
-                        passError()
-                            ? getMessage()
-                            : Text(
-                                'Password should at least have 6 Characters'),
+                        // passError()
+                        //     ? getMessage()
+                        //     : Text(
+                        //         'Password should at least have 6 Characters'),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
-                            onPress: () {
-                              if (!passError()) {
-                                print('done afs');
-                                signUp(email, password1, context).whenComplete(
-                                  () => Navigator.pushNamed(
-                                      context, ProfileScreen.id),
-                                );
+                            onPress: () async {
+                              if (passError() == 0) {
+                                try {
+                                  UserCredential userCredential =
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
+                                    email: email,
+                                    password: password1,
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'weak-password') {
+                                    _showMyDialogSignUp(getMessage(3));
+                                  } else if (e.code == 'email-already-in-use') {
+                                    _showMyDialogSignUp(getMessage(4));
+                                  }
+                                } catch (e) {
+                                  print(e);
+                                }
+                              } else {
+                                _showMyDialogSignUp(getMessage(passError()));
                               }
                             },
                             text: 'Continue',
@@ -187,22 +200,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ));
   }
 
-  bool passError() {
-    bool passError;
-    if (password1 != password2) {
-      setState(() {
-        passError = true;
-      });
+  int passError() {
+    int passError;
+    if (password1 == null || password2 == null || email == null) {
+      passError = 1;
+    } else if (password1 != password2) {
+      passError = 2;
+    } else if (password1.length < 6 || password2.length < 6) {
+      passError = 3;
     } else {
-      passError = false;
+      passError = 0;
     }
     return passError;
   }
 
-  Text getMessage() {
-    return Text(
-      'Passwords do not match',
-      style: TextStyle(color: Colors.red),
+  String getMessage(int errorNo) {
+    String errorText;
+    switch (errorNo) {
+      case 1:
+        errorText = 'Enter All the Credentials';
+        break;
+      case 2:
+        errorText = 'Passwords do not match';
+        break;
+      case 3:
+        errorText = 'Weak Password';
+        break;
+      case 4:
+        errorText = 'Email Already In Use';
+        break;
+    }
+    return errorText;
+  }
+
+  Future<void> _showMyDialogSignUp(String input) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                input,
+                style: TextStyle(color: kSecondaryColor, fontSize: 16),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
