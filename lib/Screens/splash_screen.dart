@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:crimemapping/Screens/home_screen.dart';
+import 'package:crimemapping/palette.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'Welcome_screen.dart';
 
@@ -50,6 +52,30 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.white, child: FlutterLogo(size: 20));
+    return Container(
+      color: kBackGroundColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image(
+              image: AssetImage(
+                'images/badge.png',
+              ),
+              width: 150,
+              height: 150,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SpinKitWave(
+              color: Colors.yellow,
+              size: 50,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
