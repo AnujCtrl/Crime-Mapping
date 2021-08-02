@@ -126,12 +126,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPress: () async {
                               if (passError() == 0) {
                                 try {
-                                  UserCredential userCredential =
+                                  final UserCredential userCredential =
                                       await FirebaseAuth.instance
                                           .signInWithEmailAndPassword(
                                     email: email,
                                     password: password,
                                   );
+                                  if (userCredential.user != null) {
+                                    print(userCredential.user);
+                                    Navigator.pushNamed(context, HomeScreen.id);
+                                  }
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'user-not-found') {
                                     _showMyDialogLogin(getMessage(4));

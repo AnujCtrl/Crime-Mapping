@@ -448,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(bottom: 16, top: 8),
                   child: Text(
                     'Report An Issue',
-                    style: TextStyle(color: kTextColor, fontSize: 24),
+                    style: TextStyle(fontSize: 24),
                   ),
                 ),
               ),
@@ -586,12 +586,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       'name': report.name,
                       'phoneNo': report.phoneNo,
                     });
+                    Navigator.pop(context);
+                    _showMyDialogReport();
                   } else {
                     _showMyDialogReportErr(getMessage(passError()));
                   }
-
-                  Navigator.pop(context);
-                  _showMyDialogReport();
                 },
                 label: Padding(
                   padding: const EdgeInsets.all(8.0),

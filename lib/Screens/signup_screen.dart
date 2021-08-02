@@ -156,10 +156,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         ),
-                        // passError()
-                        //     ? getMessage()
-                        //     : Text(
-                        //         'Password should at least have 6 Characters'),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: ButtonTile(
@@ -172,11 +168,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     email: email,
                                     password: password1,
                                   );
+                                  if (userCredential.user != null) {
+                                    Navigator.pushNamed(
+                                        context, ProfileScreen.id);
+                                  }
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'weak-password') {
                                     _showMyDialogSignUp(getMessage(3));
                                   } else if (e.code == 'email-already-in-use') {
                                     _showMyDialogSignUp(getMessage(4));
+                                  } else if (e.code == 'invalid-email') {
+                                    _showMyDialogSignUp(getMessage(5));
                                   }
                                 } catch (e) {
                                   print(e);
@@ -228,6 +230,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         break;
       case 4:
         errorText = 'Email Already In Use';
+        break;
+      case 5:
+        errorText = 'Invalid Email';
         break;
     }
     return errorText;
