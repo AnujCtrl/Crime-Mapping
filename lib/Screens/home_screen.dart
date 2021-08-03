@@ -599,7 +599,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.photoUrl);
                   print(report.locDesc);
                   if (passError() == 0) {
-                    _firestore.collection('report1').add({
+                    _firestore.collection('report').add({
                       'photoUrl': report.photoUrl == null
                           ? 'https://i.imgur.com/oO6KOxx.png'
                           : report.photoUrl,

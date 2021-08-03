@@ -44,10 +44,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       profileImage = File(tempImage.path);
     });
     print('done image picking');
-    await uploadImage(profileImage);
+    // await uploadImage(profileImage);
   }
 
-  uploadImage(File file) async {
+  uploadImage() async {
     print(loggedInUser.email);
     print(currentPhoneDate);
     // var randomNo = Random(25);
@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .ref()
         .child('${loggedInUser.email}')
         .child('$currentPhoneDate.jpg');
-    UploadTask task = firebaseStorageRef.putFile(file);
+    UploadTask task = firebaseStorageRef.putFile(profileImage);
     getUrl().then((value) {
       print('done uploading');
 
@@ -138,9 +138,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   ButtonTile(
                     text: 'CHANGE',
-                    onPress: () {
+                    onPress: () async {
+                      await getImage();
                       setState(() {
-                        getImage();
+                        uploadImage();
                       });
                     },
                   ),
