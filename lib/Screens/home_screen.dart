@@ -8,6 +8,7 @@ import 'package:crimemapping/services/authentication.dart';
 import 'package:crimemapping/services/service_police.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String liveAddress;
   DateTime currentPhoneDate = DateTime.now();
   BitmapDescriptor customIcon1;
   final _firestore = FirebaseFirestore.instance;
@@ -39,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   GoogleMapController myController;
   Report report = Report();
   var currentLocation;
+
+  _HomeScreenState();
   @override
   void initState() {
     super.initState();
@@ -89,6 +93,23 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<String> getAddress() async {
+    print('Address');
+    LatLng locat = LatLng(currentLocation.latitude, currentLocation.longitude);
+    print(locat);
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        currentLocation.latitude, currentLocation.longitude);
+    for (var place in placemarks) {
+      final streetName = place.street;
+      final localityName = place.locality;
+      final administrativeAreaName = place.administrativeArea;
+      final String address =
+          "$streetName,$localityName,$administrativeAreaName";
+      print(address);
+      return address;
+    }
+  }
+
   void getReportInfo() {
     setState(() {
       String stringdt;
@@ -101,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
       report.emerPhoneNo = currentUser.emerPhoneNo; //'
       report.location =
           LatLng(currentLocation.latitude, currentLocation.longitude);
+
       stringdt = DateTime.now().toString();
       stringdt = stringdt[2] +
           stringdt[3] +
@@ -119,12 +141,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  int flag = 0;
   @override
   Widget build(BuildContext context) {
     addMarkers();
     // print(count);
     // addHeatmap();
-
+    if (report.locDesc == null) {
+      getAddress().then((value) {
+        setState(() {
+          print('Done addressing');
+          report.locDesc = value;
+          print(report.locDesc);
+        });
+      });
+    }
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: SafeArea(
@@ -262,6 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? NetworkImage('https://i.imgur.com/oO6KOxx.png')
                     : NetworkImage(currentUser.photoUrl),
                 radius: 50,
+                backgroundColor: kBackGroundColor,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -565,8 +597,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   print(report.email);
                   print(report.homeAddress);
                   print(report.photoUrl);
+                  print(report.locDesc);
                   if (passError() == 0) {
-                    _firestore.collection('report').add({
+                    _firestore.collection('report1').add({
                       'photoUrl': report.photoUrl == null
                           ? 'https://i.imgur.com/oO6KOxx.png'
                           : report.photoUrl,
@@ -585,6 +618,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           report.location.latitude, report.location.longitude),
                       'name': report.name,
                       'phoneNo': report.phoneNo,
+                      'locDesc': report.locDesc,
                     });
                     Navigator.pop(context);
                     _showMyDialogReport();

@@ -331,9 +331,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       passError = 4;
     } else if (userProfile.gender == 0) {
       passError = 5;
-    } else if (userProfile.phoneNo < 10000000000) {
+    } else if (userProfile.phoneNo < 1000000000) {
       passError = 6;
-    } else if (userProfile.emerPhoneNo < 10000000000) {
+    } else if (userProfile.emerPhoneNo < 1000000000) {
       passError = 7;
     } else {
       passError = 0;

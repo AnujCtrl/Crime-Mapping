@@ -15,4 +15,5 @@ class Report {
   int phoneNo;
   LatLng location;
   String name;
+  String locDesc;
 }

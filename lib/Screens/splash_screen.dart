@@ -61,7 +61,7 @@ class SplashScreenState extends State<SplashScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Image(
               image: AssetImage(
-                'images/badge.png',
+                'images/SpotCrime-02.png',
               ),
               width: 150,
               height: 150,
@@ -70,7 +70,7 @@ class SplashScreenState extends State<SplashScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SpinKitWave(
-              color: Colors.yellow,
+              color: kSecondaryColor,
               size: 50,
             ),
           )
