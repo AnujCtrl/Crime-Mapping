@@ -442,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
             markerId: MarkerId(police.properties.name.toString()),
             infoWindow: InfoWindow(
                 title: police.properties.name,
-                snippet: police.properties.zone
+                snippet: police.properties.city
                     .toString()
                     .replaceAll('City.', 'City: ')),
             onTap: () {},
