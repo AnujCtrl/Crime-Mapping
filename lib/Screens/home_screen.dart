@@ -3,6 +3,7 @@ import 'package:crimemapping/Model/police_data_model.dart';
 import 'package:crimemapping/Model/report_class.dart';
 import 'package:crimemapping/Model/userclass.dart';
 import 'package:crimemapping/Screens/Welcome_screen.dart';
+import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/services/caseLocation.dart';
 import 'package:crimemapping/services/authentication.dart';
 import 'package:crimemapping/services/service_police.dart';
@@ -52,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         currentUser = value;
       });
+      if (currentUser.name == null) {
+        _showMyDialogProfileIncomplete('Your Profile is Incomplete');
+      }
     });
     mapToggle = true;
     locationToggle = true;
@@ -222,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     initialCameraPosition: CameraPosition(
                         target: LatLng(currentLocation.latitude,
                             currentLocation.longitude),
-                        zoom: 10.0),
+                        zoom: 13.0),
                   )),
                 ),
           Padding(
@@ -435,12 +439,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Marker(
             icon: customIcon1,
             position: LatLng(point.latitude, point.longitude),
-            markerId: MarkerId(police.properties.id.toString()),
+            markerId: MarkerId(police.properties.name.toString()),
             infoWindow: InfoWindow(
                 title: police.properties.name,
-                snippet: police.properties.stateName
+                snippet: police.properties.zone
                     .toString()
-                    .replaceAll('StateName.', 'State: ')),
+                    .replaceAll('City.', 'City: ')),
             onTap: () {},
           ),
         );
@@ -687,6 +691,40 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialogProfileIncomplete(String input) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                input,
+                style: TextStyle(color: kSecondaryColor, fontSize: 16),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, ProfileScreen.id);
               },
             ),
           ],
