@@ -211,6 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       FloatingActionButtonLocation.centerFloat,
                   body: Container(
                       child: GoogleMap(
+                    zoomGesturesEnabled: true,
+                    // tiltGesturesEnabled: false,
+                    minMaxZoomPreference: MinMaxZoomPreference(13, 17),
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
                     // heatmaps: _heatmaps,
@@ -226,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     initialCameraPosition: CameraPosition(
                         target: LatLng(currentLocation.latitude,
                             currentLocation.longitude),
-                        zoom: 13.0),
+                        zoom: 15.0),
                   )),
                 ),
           Padding(
@@ -445,7 +448,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 snippet: police.properties.city
                     .toString()
                     .replaceAll('City.', 'City: ')),
-            onTap: () {},
+            onTap: myController == null
+                ? null
+                : () =>
+                    myController.animateCamera(CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                          target: LatLng(point.latitude, point.longitude),
+                          zoom: 16.0,
+                          tilt: 30),
+                    )),
           ),
         );
       });

@@ -2,6 +2,7 @@ import 'package:crimemapping/Screens/profile_settings_screen.dart';
 import 'package:crimemapping/Screens/Welcome_screen.dart';
 import 'package:crimemapping/Screens/login_screen.dart';
 import 'package:crimemapping/Screens/signup_screen.dart';
+import 'package:crimemapping/testingprofile.dart';
 // import 'package:crimemapping/palette.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +22,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // darkTheme: ThemeData(fontFamily: 'WorkSans'),
       // theme: ThemeData.dark(fontFamily: 'Roboto Regular').copyWith(fontFamily: 'Roboto Regular'),
-      theme: ThemeData.dark().copyWith(
-        textTheme: ThemeData.dark().textTheme.apply(
+      theme: ThemeData.light().copyWith(
+        textTheme: ThemeData.light().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
-        primaryTextTheme: ThemeData.dark().textTheme.apply(
+        primaryTextTheme: ThemeData.light().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
-        accentTextTheme: ThemeData.dark().textTheme.apply(
+        accentTextTheme: ThemeData.light().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
       ),
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: SplashScreen.id,
       routes: {
+        TestingProfile.id: (context) => TestingProfile(),
         HomeScreen.id: (context) => HomeScreen(),
         SplashScreen.id: (context) => SplashScreen(),
         LoginScreen.id: (context) => LoginScreen(),
