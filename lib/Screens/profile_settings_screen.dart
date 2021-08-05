@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   DateTime currentPhoneDate = DateTime.now();
-  String photoImageUrl = 'https://i.imgur.com/oO6KOxx.png';
+  String photoImageUrl;
 
   File profileImage;
   final _firestore = FirebaseFirestore.instance;
@@ -46,36 +46,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print('done image picking');
     // await uploadImage(profileImage);
   }
-
-  uploadImage() async {
-    print(loggedInUser.email);
-    print(currentPhoneDate);
-    // var randomNo = Random(25);
-    final Reference firebaseStorageRef = FirebaseStorage.instance
-        .ref()
-        .child('${loggedInUser.email}')
-        .child('$currentPhoneDate.jpg');
-    UploadTask task = firebaseStorageRef.putFile(profileImage);
-    getUrl().then((value) {
-      print('done uploading');
-
-      setState(() {
-        photoImageUrl = value;
-        print(photoImageUrl);
-        userProfile.photoUrl = photoImageUrl;
-      });
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  Future<String> getUrl() async {
-    return await FirebaseStorage.instance
-        .ref()
-        .child('${loggedInUser.email}')
-        .child('$currentPhoneDate.jpg')
-        .getDownloadURL();
-  }
+  //
+  // uploadImage() async {
+  //   print(loggedInUser.email);
+  //   print(currentPhoneDate);
+  //   // var randomNo = Random(25);
+  //   final Reference firebaseStorageRef = FirebaseStorage.instance
+  //       .ref()
+  //       .child('${loggedInUser.email}')
+  //       .child('$currentPhoneDate.jpg');
+  //   UploadTask task = firebaseStorageRef.putFile(profileImage);
+  //   getUrl().then((value) {
+  //     print('done uploading');
+  //
+  //     setState(() {
+  //       photoImageUrl = value;
+  //       print(photoImageUrl);
+  //       userProfile.photoUrl = photoImageUrl;
+  //     });
+  //   }).catchError((e) {
+  //     print(e);
+  //   });
+  // }
+  //
+  // Future<String> getUrl() async {
+  //   return await FirebaseStorage.instance
+  //       .ref()
+  //       .child('${loggedInUser.email}')
+  //       .child('$currentPhoneDate.jpg')
+  //       .getDownloadURL();
+  // }
 
   void getCurrentUser() async {
     try {
@@ -129,19 +129,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Center(
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(photoImageUrl),
-                      backgroundColor: kBackGroundColor,
-                      radius: 80,
-                    ),
+                  ClipOval(
+                    child: profileImage == null
+                        ? Image.network(
+                            'https://i.imgur.com/oO6KOxx.png',
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            profileImage,
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   ButtonTile(
                     text: 'CHANGE',
                     onPress: () async {
-                      await getImage();
-                      setState(() {
-                        uploadImage();
+                      getImage().whenComplete(() {
+                        final Reference firebaseStorageRef = FirebaseStorage
+                            .instance
+                            .ref()
+                            .child('Profile Images')
+                            .child('${loggedInUser.email}')
+                            .child('test.jpg');
+                        UploadTask task =
+                            firebaseStorageRef.putFile(profileImage);
                       });
                     },
                   ),
@@ -174,8 +188,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: kTextFieldDecoration.copyWith(
                                 labelText: 'Full Name',
                               ),
-                              onChanged: (value) {
+                              onChanged: (value) async {
                                 userProfile.name = value;
+                                photoImageUrl = await FirebaseStorage.instance
+                                    .ref()
+                                    .child('Profile Images')
+                                    .child('${loggedInUser.email}')
+                                    .child('test.jpg')
+                                    .getDownloadURL();
                               },
                             ),
                           ),
@@ -189,6 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               onChanged: (value) {
                                 userProfile.phoneNo = int.parse(value);
+                                print(photoImageUrl);
                               },
                             ),
                           ),
@@ -277,13 +298,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 24),
                               child: ButtonTile(
                                 onPress: () {
-                                  print(userProfile.photoUrl);
+                                  // print(userProfile.photoUrl);
                                   print(userProfile.name);
                                   print(userProfile.email);
                                   print(userProfile.phoneNo);
                                   print(userProfile.gender);
                                   print(userProfile.homeAddress);
                                   print(userProfile.emerPhoneNo);
+                                  print('FOTU:$photoImageUrl');
                                   if (passError() == 0) {
                                     _firestore.collection('user').add({
                                       'photoUrl': userProfile.photoUrl == null

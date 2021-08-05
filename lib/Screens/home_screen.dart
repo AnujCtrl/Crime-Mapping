@@ -455,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       CameraPosition(
                           target: LatLng(point.latitude, point.longitude),
                           zoom: 16.0,
-                          tilt: 30),
+                          tilt: 45),
                     )),
           ),
         );
