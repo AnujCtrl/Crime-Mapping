@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final localityName = place.locality;
       final administrativeAreaName = place.administrativeArea;
       final String address =
-          "$streetName,$localityName,$administrativeAreaName";
+          "$streetName, $localityName, $administrativeAreaName";
       print(address);
       return address;
     }
@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      mapToggle && locationToggle ? 'Loading' : '  SPOT CRIME',
+                      mapToggle && locationToggle ? 'Loading' : '  SpotCrime',
                       style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFFFC76A1),
