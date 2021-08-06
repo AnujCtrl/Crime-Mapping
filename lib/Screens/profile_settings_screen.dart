@@ -156,6 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             .child('test.jpg');
                         UploadTask task =
                             firebaseStorageRef.putFile(profileImage);
+                        _showMyDialogDp();
                       });
                     },
                   ),
@@ -188,14 +189,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: kTextFieldDecoration.copyWith(
                                 labelText: 'Full Name',
                               ),
-                              onChanged: (value) async {
+                              onChanged: (value) {
                                 userProfile.name = value;
-                                photoImageUrl = await FirebaseStorage.instance
-                                    .ref()
-                                    .child('Profile Images')
-                                    .child('${loggedInUser.email}')
-                                    .child('test.jpg')
-                                    .getDownloadURL();
                               },
                             ),
                           ),
@@ -209,7 +204,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               onChanged: (value) {
                                 userProfile.phoneNo = int.parse(value);
-                                print(photoImageUrl);
                               },
                             ),
                           ),
@@ -308,9 +302,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   print('FOTU:$photoImageUrl');
                                   if (passError() == 0) {
                                     _firestore.collection('user').add({
-                                      'photoUrl': userProfile.photoUrl == null
+                                      'photoUrl': photoImageUrl == null
                                           ? 'https://i.imgur.com/oO6KOxx.png'
-                                          : userProfile.photoUrl,
+                                          : photoImageUrl,
                                       'email': userProfile.email,
                                       'emerPhoneNo': userProfile.emerPhoneNo,
                                       'gender': userProfile.gender,
@@ -416,6 +410,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(color: kSecondaryColor),
               ),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialogDp() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Your Profile Pic Is uploaded',
+                style: TextStyle(color: kSecondaryColor, fontSize: 16),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: kSecondaryColor),
+              ),
+              onPressed: () async {
+                photoImageUrl = await FirebaseStorage.instance
+                    .ref()
+                    .child('Profile Images')
+                    .child('${loggedInUser.email}')
+                    .child('test.jpg')
+                    .getDownloadURL();
+                print(photoImageUrl);
                 Navigator.of(context).pop();
               },
             ),

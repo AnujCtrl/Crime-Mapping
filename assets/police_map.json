@@ -52,7 +52,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Sanpada Station",
+        "name": "Sanpada Police Station",
         "phone": "022 2775 1406",
         "zone": "1",
         "city": "Navi Mumbai"
@@ -60,8 +60,9 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          19.062703718354648,
-          73.0107447413883
+          73.0107447413883,
+          19.062703718354648
+
         ]
       }
     },

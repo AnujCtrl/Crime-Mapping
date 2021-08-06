@@ -22,14 +22,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // darkTheme: ThemeData(fontFamily: 'WorkSans'),
       // theme: ThemeData.dark(fontFamily: 'Roboto Regular').copyWith(fontFamily: 'Roboto Regular'),
-      theme: ThemeData.light().copyWith(
-        textTheme: ThemeData.light().textTheme.apply(
+      theme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
-        primaryTextTheme: ThemeData.light().textTheme.apply(
+        primaryTextTheme: ThemeData.dark().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
-        accentTextTheme: ThemeData.light().textTheme.apply(
+        accentTextTheme: ThemeData.dark().textTheme.apply(
               fontFamily: 'WorkSans',
             ),
       ),
