@@ -30,4 +30,7 @@ By clicking the icon, a route viewer button will appear at the bottom right of t
 A menu will appear consisting of two input sections, one of them would be a dropdown consisting of the possible crime category (press ‘other’ if none of them falls under your situation). The second section is optional to be filled which asks for a short description about the scenario (recommended to be filled if you have chosen ‘other’ as your crime category). As soon as you press the report button, your complaint will reach the respective officials within a span of milliseconds and contact shall be made with you.<br><br>
 <img src="Screenshots/mobile8.jpg" width="200" >
 <img src="Screenshots/mobile9.jpg" width="200" >
+<h4>Webite</h4>
+Only whitelisted individuals and law enforcement agencies have access to this cutting-edge website,
+which is used to manage the huge intake of information.
 
