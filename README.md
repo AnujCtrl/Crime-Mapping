@@ -9,11 +9,11 @@ safety android application which will help you to get connected with
 law enforcement officials in no time.
 
 <h4>Signup Form</h4>
-To validate the user and minimise duplicate and spam reports, registration is necessary at the start. Registration consists of filling up two forms. You have to enter an unregistered email and strong password in the first form. Personal credentials need to be filled in the second form.<br>
-<img src="Screenshots/mobile2.png" width="200" ><br><br>
+To validate the user and minimise duplicate and spam reports, registration is necessary at the start. Registration consists of filling up two forms. You have to enter an unregistered email and strong password in the first form. Personal credentials need to be filled in the second form.<br><br>
+<img src="Screenshots/mobile2.png" width="200" >
 <h4>Login Form</h4>
 After registering, you will be asked to go through the login process. This process consists of validation of your entered email address and your SpotCrime password.<br><br>
-<img src="Screenshots/mobile1.png" width="200" ><br><br>
+<img src="Screenshots/mobile1.png" width="200" >
 <h4>Home Screen</h4>
 After you go through the login procedure the main screen of the application, that is,the home page is what you would be seeing.<br><br>
 <img src="Screenshots/mobile3.jpg" width="200" >
