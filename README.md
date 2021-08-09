@@ -22,10 +22,12 @@ After registering, you will be asked to go through the login process. This proce
 <img src="Screenshots/mobile5.jpg" width="200" >
 <h4>Police Station Marker</h4>
 The home page consists of a map in the background showing your exact current location as well as the police station (police badge icon) nearest to you. As soon as you tap on any of the police station icons, you’ll see the significant dataset about the respective station in the form of a pop-up.<br>
-
-
 <img src="Screenshots/mobile6.jpg" width="200" >
+<h4>Navigation</h4>
+By clicking the icon, a route viewer button will appear at the bottom right of the screen which when pressed will display the shortest and fastest path from your location to the nearest police station.<br>
 <img src="Screenshots/mobile7.jpg" width="200" >
+<h4Report An Issue</h4>
+A menu will appear consisting of two input sections, one of them would be a dropdown consisting of the possible crime category (press ‘other’ if none of them falls under your situation). The second section is optional to be filled which asks for a short description about the scenario (recommended to be filled if you have chosen ‘other’ as your crime category). As soon as you press the report button, your complaint will reach the respective officials within a span of milliseconds and contact shall be made with you.<br>
 <img src="Screenshots/mobile8.jpg" width="200" >
 <img src="Screenshots/mobile9.jpg" width="200" >
 
