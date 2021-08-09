@@ -35,6 +35,6 @@ Only whitelisted individuals and law enforcement agencies have access to this cu
 which is used to manage the huge intake of information.
 
 <h4>Contributors</h4>
--App Developer : <a href="https://github.com/Darshan120501" >Darshan Rao</a>
--Designer : <a href="https://github.com/bapuz">Anuj Patil</a>
--Website Developer : <a href="https://github.com/Kaustubh0204" >Kaustubh Utturwar</a>
+- App Developer : <a href="https://github.com/Darshan120501" >Darshan Rao</a><br>
+- Designer : <a href="https://github.com/bapuz">Anuj Patil</a><br>
+- Website Developer : <a href="https://github.com/Kaustubh0204" >Kaustubh Utturwar</a><br>
