@@ -46,36 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print('done image picking');
     // await uploadImage(profileImage);
   }
-  //
-  // uploadImage() async {
-  //   print(loggedInUser.email);
-  //   print(currentPhoneDate);
-  //   // var randomNo = Random(25);
-  //   final Reference firebaseStorageRef = FirebaseStorage.instance
-  //       .ref()
-  //       .child('${loggedInUser.email}')
-  //       .child('$currentPhoneDate.jpg');
-  //   UploadTask task = firebaseStorageRef.putFile(profileImage);
-  //   getUrl().then((value) {
-  //     print('done uploading');
-  //
-  //     setState(() {
-  //       photoImageUrl = value;
-  //       print(photoImageUrl);
-  //       userProfile.photoUrl = photoImageUrl;
-  //     });
-  //   }).catchError((e) {
-  //     print(e);
-  //   });
-  // }
-  //
-  // Future<String> getUrl() async {
-  //   return await FirebaseStorage.instance
-  //       .ref()
-  //       .child('${loggedInUser.email}')
-  //       .child('$currentPhoneDate.jpg')
-  //       .getDownloadURL();
-  // }
 
   void getCurrentUser() async {
     try {
