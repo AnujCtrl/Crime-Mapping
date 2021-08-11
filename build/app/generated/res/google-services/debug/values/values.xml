@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">928787398601-pupvrrqmvd2ih6v2o5au8j7crs5r3lrk.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">928787398601</string>
+    <string name="google_api_key" translatable="false">AIzaSyBqaH0u20jnoTPz8Mw1IwrhGDF96w2zHVI</string>
+    <string name="google_app_id" translatable="false">1:928787398601:android:0d5159bea408ecf2e47218</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBqaH0u20jnoTPz8Mw1IwrhGDF96w2zHVI</string>
+    <string name="google_storage_bucket" translatable="false">crime-mapping-7610d.appspot.com</string>
+    <string name="project_id" translatable="false">crime-mapping-7610d</string>
+</resources>
