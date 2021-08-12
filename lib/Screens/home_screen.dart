@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int flag = 0;
   @override
   Widget build(BuildContext context) {
-    // addMarkers();
+    addMarkers();
     // print(count);
     addHeatmap();
     if (report.locDesc == null) {
@@ -165,14 +165,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Scaffold(
       extendBodyBehindAppBar: true,
-      floatingActionButton: FloatingActionButton(
-        child: Text('M'),
-        onPressed: () {
-          setState(() {
-            addMarkers();
-          });
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Text('M'),
+      //   onPressed: () {
+      //     setState(() {
+      //       addMarkers();
+      //     });
+      //   },
+      // ),
       body: SafeArea(
         child: Stack(children: [
           locationToggle
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: GoogleMap(
                     zoomGesturesEnabled: true,
                     // tiltGesturesEnabled: false,
-                    // minMaxZoomPreference: MinMaxZoomPreference(13, 17),
+                    minMaxZoomPreference: MinMaxZoomPreference(12, 17),
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
                     heatmaps: _heatmaps,
@@ -262,13 +262,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      mapToggle && locationToggle ? 'Loading' : '  SpotCrime',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFFFC76A1),
-                          fontWeight: FontWeight.bold),
-                    ),
+                    mapToggle && locationToggle
+                        ? Text(
+                            'Laoding.',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFFFC76A1),
+                                fontWeight: FontWeight.bold),
+                          )
+                        : RichText(
+                            text: TextSpan(
+                                text: '  Law',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'Plus.',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFFFC76A1),
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ]),
+                          ),
                     FloatingActionButton(
                       backgroundColor: kButtonBackground,
                       onPressed: () {

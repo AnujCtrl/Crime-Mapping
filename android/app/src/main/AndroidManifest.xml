@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="SpotCrime"
+        android:label="LawPlus"
         android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyAtQr2lDrwYJQu7dIPQJsjCWWcM_1kCm8E"/>
